@@ -25,7 +25,7 @@
   
   <meta property="og:type" content="article">
   <meta property="og:article:published_time" content="2022-04-15">
-  <meta property="og:article:modified_time" content="2022-04-15">
+  <meta property="og:article:modified_time" content="2022-04-16">
   <meta property="og:article:author" content="Happy Monster">
   
   
@@ -167,7 +167,7 @@
     
     <a href="/about" class="navbar-menu-item">
     
-    关于
+    关于我
     
     </a>
     
@@ -204,31 +204,56 @@
     
     
     <span class="dot"></span>
-    <span>245 字</span>
+    <span>787 字</span>
     
   </div>
   
   </header>
   <div id="section" class="post-content">
     <p>个人博客由hexo搭建</p>
-<h1 id="1-hexo项目构建"><a href="#1-hexo项目构建" class="headerlink" title="1.hexo项目构建"></a>1.hexo项目构建</h1><p>安装hexo，详细看hexo官网文档 <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">https://hexo.io/zh-cn/docs/</a></p>
+<h2 id="1-hexo项目构建"><a href="#1-hexo项目构建" class="headerlink" title="1.hexo项目构建"></a>1.hexo项目构建</h2><p>安装hexo，详细看hexo官网文档 <a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">https://hexo.io/zh-cn/docs/</a></p>
+<p>通过hexo-cli的方式，构建博客项目会更容易。</p>
 <p>环境：需要git，node环境。</p>
-<pre class="highlight"><span class="line">hexo g <span class="comment">#即 hexo generate，生成静态文件</span></span><br><span class="line">hexo s <span class="comment">#即 hexo server，本地运行服务器</span></span><br><span class="line">hexo d <span class="comment">#即 hexo deploy，部署服务器，常用指令 hexo clean &amp;&amp; hexo d</span></span><br></pre>
+<p>首先新建github项目，项目名为<code>&#123;username&#125;</code>.github.io，项目是public的而非private的。</p>
+<p>下面是常用的hexo指令。</p>
+<pre class="highlight"><span class="line">hexo init &lt;project_url&gt; <span class="comment">#初始化项目</span></span><br><span class="line"><span class="built_in">cd</span> &lt;project_url&gt; <span class="comment">#进入项目路径</span></span><br><span class="line">hexo g <span class="comment">#即 hexo generate，生成静态文件</span></span><br><span class="line">hexo s <span class="comment">#即 hexo server，本地运行服务器</span></span><br><span class="line">hexo d <span class="comment">#即 hexo deploy，部署服务器，常用指令 hexo clean &amp;&amp; hexo d</span></span><br></pre>
 
+<p>修改项目根目录下的 _config.yml文件，添加deploy（发布）相关的属性。</p>
+<p>需要指定发布项目的repo，这里因为我们用的是github pages，其通常是 <code>&#123;username&#125;</code>.github.io形式的public仓库。</p>
+<pre class="highlight"><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/one-command-deployment</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">git@github.com:fuheihei/fuheihei.github.io.git</span> <span class="comment"># https://bitbucket.org/JohnSmith/johnsmith.bitbucket.io</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">main</span></span><br><span class="line"></span><br></pre>
 
-<h1 id="2-主题选取"><a href="#2-主题选取" class="headerlink" title="2.主题选取"></a>2.主题选取</h1><p>主题选择的是<a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole">anatole</a></p>
-<p>主题在hexo上的主题仓库: <a target="_blank" rel="noopener" href="https://hexo.io/themes/">https://hexo.io/themes/</a></p>
-<p>将主题复制到themes文件夹下，修改<code>_config.yml</code>中的属性</p>
-<pre class="highlight"><span class="line">theme: anatole</span><br><span class="line"><span class="comment"># Extensions</span></span><br><span class="line"><span class="comment">## Plugins: https://hexo.io/plugins/</span></span><br><span class="line"><span class="comment">## Themes: https://hexo.io/themes/</span></span><br></pre>
+<h2 id="2-主题选取"><a href="#2-主题选取" class="headerlink" title="2.主题选取"></a>2.主题选取</h2><p>hexo构建的博客项目可以选取很多开源的hexo主题，类似于qq空间的皮肤，我们通过修改根目录下<code>_config.yml</code>中的属性<code>theme: </code>就能指定对应的皮肤。</p>
+<p>例如</p>
+<p>想要选择的主题是<a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole">anatole</a></p>
+<p>将主题项目 <code>git clone</code> 到项目中的themes文件夹下，修改项目根目录下的<code>_config.yml</code>中的属性</p>
+<pre class="highlight"><span class="line">theme: anatole  <span class="comment">#将theme指定为anatole</span></span><br><span class="line"><span class="comment"># Extensions</span></span><br><span class="line"><span class="comment">## Plugins: https://hexo.io/plugins/</span></span><br><span class="line"><span class="comment">## Themes: https://hexo.io/themes/</span></span><br></pre>
 
-<h1 id="3-写文章"><a href="#3-写文章" class="headerlink" title="3.写文章"></a>3.写文章</h1><pre class="highlight"><span class="line">hexo new [<span class="built_in">type</span>] &lt;文章名&gt;</span><br></pre>
+<p>需要注意的是，如果指定为anatole，那么项目必须得有theme&#x2F;anatole文件夹。</p>
+<p>其他丰富的hexo主题请查阅: <a target="_blank" rel="noopener" href="https://hexo.io/themes/">https://hexo.io/themes/</a></p>
+<h2 id="3-写文章"><a href="#3-写文章" class="headerlink" title="3.写文章"></a>3.写文章</h2><pre class="highlight"><span class="line">hexo new [layout] &lt;title文章名&gt;</span><br></pre>
 
-<h1 id="4-评论系统"><a href="#4-评论系统" class="headerlink" title="4.评论系统"></a>4.评论系统</h1><p>使用gitalk<br>（1）在github -&gt; settings -&gt; Developer Settings -&gt; OAuth</p>
-<p> Apps 中申请新的OAuth项目</p>
-<p><code>Authorization callback URL</code> 和 <code>Homepage URL</code> 属性都写<username>.github.io博客的地址</p>
-<p>并点击按钮，生成 clientSecret</p>
-<p>(2)填写gitalk的属性</p>
+<p>例如 <code>hexo new post how-to-build-my-blog</code></p>
+<p><code>[layout]</code>可以是 post、page 和 draft，其位置和source&#x2F;_post，source&#x2F;page，source&#x2F;_draft是相关联的。</p>
+<h2 id="4-评论系统"><a href="#4-评论系统" class="headerlink" title="4.评论系统"></a>4.评论系统</h2><p>完善的博客还应该提供访问用户讨论的机会。</p>
+<img src="/images/post/tools/comments.png" alt="gitalk的demo图" width="50%" height="50%" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/images/post/tools/comments.png" class="lozad post-image">
+<p></p>
+<p style="text-align:center">gitalk的demo图</p>
+
+<p>评论系统有很多，出于免费和效率考虑，此处使用gitalk</p>
+<p>gitalk是github提供的评论系统，免费；同时gitalk的用户评论文章的内容可以在repo生成对应的issues，可以起到邮件通知的效果，保证及时回复用户。</p>
+<h3 id="1-申请OAuth-Apps"><a href="#1-申请OAuth-Apps" class="headerlink" title="(1)申请OAuth Apps"></a>(1)申请OAuth Apps</h3><p>在github -&gt; settings -&gt; Developer Settings -&gt; OAuth Apps 中申请新的OAuth项目。</p>
+<p><code>Authorization callback URL</code> 和 <code>Homepage URL</code> 属性都写<code>&lt;username&gt;</code>.github.io博客的地址。</p>
+<p>并点击按钮，生成 clientSecret，下面会用到。</p>
+<h3 id="2-填写gitalk的属性"><a href="#2-填写gitalk的属性" class="headerlink" title="(2)填写gitalk的属性"></a>(2)填写gitalk的属性</h3><p>修改项目中的<code>_config.yml</code>文件，我的在<code>theme/hexo-theme-Kaze/_config.yml</code>中。修改对应gitalk配置的部分。</p>
 <pre class="highlight"><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">  <span class="attr">clientID:</span> <span class="string">&lt;clientID&gt;</span></span><br><span class="line">  <span class="attr">clientSecret:</span> <span class="string">&lt;clientSecret&gt;</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">fuheihei.github.io</span></span><br><span class="line">  <span class="attr">owner:</span> <span class="string">fuheihei</span></span><br><span class="line">  <span class="attr">admin:</span> <span class="string">fuheihei</span></span><br><span class="line">  <span class="attr">id:</span> <span class="string">location.href</span> <span class="comment"># dont modify</span></span><br><span class="line">  <span class="attr">distractionFreeMode:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">language:</span> <span class="string">navigator.language</span> <span class="string">||</span> <span class="string">navigator.userLanguage</span></span><br><span class="line">  <span class="attr">labels:</span> [<span class="string">&#x27;Gitalk&#x27;</span>]</span><br><span class="line">  <span class="attr">perPage:</span> <span class="number">10</span></span><br></pre>
+
+<h2 id="5-发布项目"><a href="#5-发布项目" class="headerlink" title="5.发布项目"></a>5.发布项目</h2><p>本地测试查看无误后，使用命令<code>hexo clean &amp;&amp; hexo deploy</code>可以上传change提交到<code>&#123;username&#125;</code>.github.io项目中。</p>
+<p>提交结果如下图所示</p>
+<img src='/images/post/tools/gitlog-commit.png' alt="提交记录demo图" width="50%" height="50%">
+<p style="text-align:center">提交记录demo图</p>
+
+<p>可以看到<code>hexo deploy</code>指令会自动生成git的提交到repo上，通常是以时间作为commit的message。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>经过上述的步骤，相信你也会有一个较好的博客了，接下来开始享受写作吧！</p>
 
   </div>
   <div>
@@ -280,7 +305,7 @@
 
 <div class="card card-content toc-card" id="mobiletoc">
   <div class="toc-header"><i class="iconfont icon-menu" style="padding-right: 2px;"></i>目录</div>
-<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-hexo%E9%A1%B9%E7%9B%AE%E6%9E%84%E5%BB%BA"><span class="toc-text">1.hexo项目构建</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E4%B8%BB%E9%A2%98%E9%80%89%E5%8F%96"><span class="toc-text">2.主题选取</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E5%86%99%E6%96%87%E7%AB%A0"><span class="toc-text">3.写文章</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F"><span class="toc-text">4.评论系统</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-hexo%E9%A1%B9%E7%9B%AE%E6%9E%84%E5%BB%BA"><span class="toc-text">1.hexo项目构建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%B8%BB%E9%A2%98%E9%80%89%E5%8F%96"><span class="toc-text">2.主题选取</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%86%99%E6%96%87%E7%AB%A0"><span class="toc-text">3.写文章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F"><span class="toc-text">4.评论系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%94%B3%E8%AF%B7OAuth-Apps"><span class="toc-text">(1)申请OAuth Apps</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%A1%AB%E5%86%99gitalk%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-text">(2)填写gitalk的属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%8F%91%E5%B8%83%E9%A1%B9%E7%9B%AE"><span class="toc-text">5.发布项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
 </div></main>
           <aside class="left-column">
             
@@ -323,7 +348,7 @@
   <article class="display-when-two-columns spacer">
     <div class="card card-content toc-card">
       <div class="toc-header"><i class="iconfont icon-menu" style="padding-right: 2px;"></i>目录</div>
-<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-hexo%E9%A1%B9%E7%9B%AE%E6%9E%84%E5%BB%BA"><span class="toc-text">1.hexo项目构建</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E4%B8%BB%E9%A2%98%E9%80%89%E5%8F%96"><span class="toc-text">2.主题选取</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E5%86%99%E6%96%87%E7%AB%A0"><span class="toc-text">3.写文章</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F"><span class="toc-text">4.评论系统</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-hexo%E9%A1%B9%E7%9B%AE%E6%9E%84%E5%BB%BA"><span class="toc-text">1.hexo项目构建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%B8%BB%E9%A2%98%E9%80%89%E5%8F%96"><span class="toc-text">2.主题选取</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%86%99%E6%96%87%E7%AB%A0"><span class="toc-text">3.写文章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F"><span class="toc-text">4.评论系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%94%B3%E8%AF%B7OAuth-Apps"><span class="toc-text">(1)申请OAuth Apps</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%A1%AB%E5%86%99gitalk%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-text">(2)填写gitalk的属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%8F%91%E5%B8%83%E9%A1%B9%E7%9B%AE"><span class="toc-text">5.发布项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
     </div>
   </article>
   
@@ -362,7 +387,7 @@
   
   <article class="card card-content toc-card">
     <div class="toc-header"><i class="iconfont icon-menu" style="padding-right: 2px;"></i>目录</div>
-<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-hexo%E9%A1%B9%E7%9B%AE%E6%9E%84%E5%BB%BA"><span class="toc-text">1.hexo项目构建</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E4%B8%BB%E9%A2%98%E9%80%89%E5%8F%96"><span class="toc-text">2.主题选取</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E5%86%99%E6%96%87%E7%AB%A0"><span class="toc-text">3.写文章</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F"><span class="toc-text">4.评论系统</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-hexo%E9%A1%B9%E7%9B%AE%E6%9E%84%E5%BB%BA"><span class="toc-text">1.hexo项目构建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%B8%BB%E9%A2%98%E9%80%89%E5%8F%96"><span class="toc-text">2.主题选取</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%86%99%E6%96%87%E7%AB%A0"><span class="toc-text">3.写文章</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F"><span class="toc-text">4.评论系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%94%B3%E8%AF%B7OAuth-Apps"><span class="toc-text">(1)申请OAuth Apps</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%A1%AB%E5%86%99gitalk%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-text">(2)填写gitalk的属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%8F%91%E5%B8%83%E9%A1%B9%E7%9B%AE"><span class="toc-text">5.发布项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
   </article>
   
   
