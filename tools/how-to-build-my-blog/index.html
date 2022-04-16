@@ -124,6 +124,17 @@
   
   
   
+  
+  
+  <link href="/js/lib/prism/prism-tomorrow.min.css" rel="stylesheet" data-prism="prism-tomorrow">
+  
+  
+  
+<link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+
+  
+  
+  
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 
@@ -204,7 +215,7 @@
     
     
     <span class="dot"></span>
-    <span>787 字</span>
+    <span>777 字</span>
     
   </div>
   
@@ -216,21 +227,33 @@
 <p>环境：需要git，node环境。</p>
 <p>首先新建github项目，项目名为<code>&#123;username&#125;</code>.github.io，项目是public的而非private的。</p>
 <p>下面是常用的hexo指令。</p>
-<pre class="highlight"><span class="line">hexo init &lt;project_url&gt; <span class="comment">#初始化项目</span></span><br><span class="line"><span class="built_in">cd</span> &lt;project_url&gt; <span class="comment">#进入项目路径</span></span><br><span class="line">hexo g <span class="comment">#即 hexo generate，生成静态文件</span></span><br><span class="line">hexo s <span class="comment">#即 hexo server，本地运行服务器</span></span><br><span class="line">hexo d <span class="comment">#即 hexo deploy，部署服务器，常用指令 hexo clean &amp;&amp; hexo d</span></span><br></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">hexo init <span class="token operator">&lt;</span>project_url<span class="token operator">></span> <span class="token comment">#初始化项目</span>
+<span class="token builtin class-name">cd</span> <span class="token operator">&lt;</span>project_url<span class="token operator">></span> <span class="token comment">#进入项目路径</span>
+hexo g <span class="token comment">#即 hexo generate，生成静态文件</span>
+hexo s <span class="token comment">#即 hexo server，本地运行服务器</span>
+hexo d <span class="token comment">#即 hexo deploy，部署服务器，常用指令 hexo clean &amp;&amp; hexo d</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>修改项目根目录下的 _config.yml文件，添加deploy（发布）相关的属性。</p>
 <p>需要指定发布项目的repo，这里因为我们用的是github pages，其通常是 <code>&#123;username&#125;</code>.github.io形式的public仓库。</p>
-<pre class="highlight"><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/one-command-deployment</span></span><br><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">git@github.com:fuheihei/fuheihei.github.io.git</span> <span class="comment"># https://bitbucket.org/JohnSmith/johnsmith.bitbucket.io</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">main</span></span><br></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># Deployment</span>
+<span class="token comment">## Docs: https://hexo.io/docs/one-command-deployment</span>
+<span class="token key atrule">deploy</span><span class="token punctuation">:</span>
+  <span class="token key atrule">type</span><span class="token punctuation">:</span> git
+  <span class="token key atrule">repo</span><span class="token punctuation">:</span> git@github.com<span class="token punctuation">:</span>fuheihei/fuheihei.github.io.git <span class="token comment">#git地址</span>
+  <span class="token key atrule">branch</span><span class="token punctuation">:</span> main<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h2 id="2-主题选取"><a href="#2-主题选取" class="headerlink" title="2.主题选取"></a>2.主题选取</h2><p>hexo构建的博客项目可以选取很多开源的hexo主题，类似于qq空间的皮肤，我们通过修改根目录下<code>_config.yml</code>中的属性<code>theme: </code>就能指定对应的皮肤。</p>
 <p>例如</p>
 <p>想要选择的主题是<a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole">anatole</a></p>
 <p>将主题项目 <code>git clone</code> 到项目中的themes文件夹下，修改项目根目录下的<code>_config.yml</code>中的属性</p>
-<pre class="highlight"><span class="line">theme: anatole  <span class="comment">#将theme指定为anatole</span></span><br><span class="line"><span class="comment"># Extensions</span></span><br><span class="line"><span class="comment">## Plugins: https://hexo.io/plugins/</span></span><br><span class="line"><span class="comment">## Themes: https://hexo.io/themes/</span></span><br></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">theme: anatole  <span class="token comment">#将theme指定为anatole</span>
+<span class="token comment"># Extensions</span>
+<span class="token comment">## Plugins: https://hexo.io/plugins/</span>
+<span class="token comment">## Themes: https://hexo.io/themes/</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 <p>需要注意的是，如果指定为anatole，那么项目必须得有theme&#x2F;anatole文件夹。</p>
 <p>其他丰富的hexo主题请查阅: <a target="_blank" rel="noopener" href="https://hexo.io/themes/">https://hexo.io/themes/</a></p>
-<h2 id="3-写文章"><a href="#3-写文章" class="headerlink" title="3.写文章"></a>3.写文章</h2><pre class="highlight"><span class="line">hexo new [layout] &lt;title文章名&gt;</span><br></pre>
+<h2 id="3-写文章"><a href="#3-写文章" class="headerlink" title="3.写文章"></a>3.写文章</h2><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">hexo new <span class="token punctuation">[</span>layout<span class="token punctuation">]</span> <span class="token operator">&lt;</span>title文章名<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>例如 <code>hexo new post how-to-build-my-blog</code></p>
 <p><code>[layout]</code>可以是 post、page 和 draft，其位置和source&#x2F;_post，source&#x2F;page，source&#x2F;_draft是相关联的。</p>
@@ -245,7 +268,17 @@
 <p><code>Authorization callback URL</code> 和 <code>Homepage URL</code> 属性都写<code>&lt;username&gt;</code>.github.io博客的地址。</p>
 <p>并点击按钮，生成 clientSecret，下面会用到。</p>
 <h3 id="2-填写gitalk的属性"><a href="#2-填写gitalk的属性" class="headerlink" title="(2)填写gitalk的属性"></a>(2)填写gitalk的属性</h3><p>修改项目中的<code>_config.yml</code>文件，我的在<code>theme/hexo-theme-Kaze/_config.yml</code>中。修改对应gitalk配置的部分。</p>
-<pre class="highlight"><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">  <span class="attr">clientID:</span> <span class="string">&lt;clientID&gt;</span></span><br><span class="line">  <span class="attr">clientSecret:</span> <span class="string">&lt;clientSecret&gt;</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">fuheihei.github.io</span></span><br><span class="line">  <span class="attr">owner:</span> <span class="string">fuheihei</span></span><br><span class="line">  <span class="attr">admin:</span> <span class="string">fuheihei</span></span><br><span class="line">  <span class="attr">id:</span> <span class="string">location.href</span> <span class="comment"># dont modify</span></span><br><span class="line">  <span class="attr">distractionFreeMode:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">language:</span> <span class="string">navigator.language</span> <span class="string">||</span> <span class="string">navigator.userLanguage</span></span><br><span class="line">  <span class="attr">labels:</span> [<span class="string">&#x27;Gitalk&#x27;</span>]</span><br><span class="line">  <span class="attr">perPage:</span> <span class="number">10</span></span><br></pre>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">gitalk</span><span class="token punctuation">:</span>
+  <span class="token key atrule">clientID</span><span class="token punctuation">:</span> &lt;clientID<span class="token punctuation">></span>
+  <span class="token key atrule">clientSecret</span><span class="token punctuation">:</span> &lt;clientSecret<span class="token punctuation">></span>
+  <span class="token key atrule">repo</span><span class="token punctuation">:</span> fuheihei.github.io
+  <span class="token key atrule">owner</span><span class="token punctuation">:</span> fuheihei
+  <span class="token key atrule">admin</span><span class="token punctuation">:</span> fuheihei
+  <span class="token key atrule">id</span><span class="token punctuation">:</span> location.href <span class="token comment"># dont modify</span>
+  <span class="token key atrule">distractionFreeMode</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
+  <span class="token key atrule">language</span><span class="token punctuation">:</span> navigator.language <span class="token punctuation">|</span><span class="token punctuation">|</span> navigator.userLanguage
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'Gitalk'</span><span class="token punctuation">]</span>
+  <span class="token key atrule">perPage</span><span class="token punctuation">:</span> <span class="token number">10</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 <h2 id="5-发布项目"><a href="#5-发布项目" class="headerlink" title="5.发布项目"></a>5.发布项目</h2><p>本地测试查看无误后，使用命令<code>hexo clean &amp;&amp; hexo deploy</code>可以上传change提交到<code>&#123;username&#125;</code>.github.io项目中。</p>
 <p>提交结果如下图所示</p>
