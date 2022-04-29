@@ -217,7 +217,7 @@
     
     
     <span class="dot"></span>
-    <span>1.1k 字</span>
+    <span>1.2k 字</span>
     
   </div>
   
@@ -234,10 +234,10 @@
   </header>
   <div id="section" class="post-content">
     <p>搭建个人博客 hexo+kaze+gitalk。</p>
-<p>我们经常会看到github有人有<username>.github.io形式的个人博客网页，他们是怎么做到的呢？</p>
+<p>我们经常会看到github有人有<code>&lt;username&gt;.github.io</code>形式的个人博客网页，他们是怎么做到的呢？</p>
 <p>仔细观察，不少人的博客底部还会出现 “powered by hexo” 或者 “由hexo强力驱动” 的字样</p>
 <p>通过下文，你也可以搭建一个自己的github pages博客</p>
-<h2 id="1-Github-Pages"><a href="#1-Github-Pages" class="headerlink" title="1.Github Pages"></a>1.Github Pages</h2><p>没错，浏览器中url为<username>.github.io形式的博客是github提供的一种博客功能，这个功能叫做github pages。<br>当用户在github上新建了<username>.github.io的public的仓库(<username>和自己的github用户名一致)，就可以为自己生成对应的github pages。并且其他访客可以通过这个url访问你的博客。</p>
+<h2 id="1-Github-Pages"><a href="#1-Github-Pages" class="headerlink" title="1.Github Pages"></a>1.Github Pages</h2><p>没错，浏览器中url为<code>&lt;username&gt;.github.io</code>形式的博客是github提供的一种博客功能，这个功能叫做github pages。<br>当用户在github上新建了<code>&lt;username&gt;.github.io</code>的public的仓库(<code>&lt;username&gt;</code>和自己的github用户名一致)，就可以为自己生成对应的github pages。并且其他访客可以通过这个url访问你的博客。</p>
 <h2 id="2-hexo项目构建"><a href="#2-hexo项目构建" class="headerlink" title="2. hexo项目构建"></a>2. hexo项目构建</h2><h3 id="2-1用-hexo初始化项目"><a href="#2-1用-hexo初始化项目" class="headerlink" title="2.1用 hexo初始化项目"></a>2.1用 hexo初始化项目</h3><p>第一步，安装hexo</p>
 <p>通过hexo-cli的方式，构建博客项目会更容易。</p>
 <p>环境：需要git，node环境(&gt;&#x3D;12.0.0, 推荐nvm安装node)</p>
@@ -259,9 +259,9 @@ hexo d <span class="token comment">#即 hexo deploy，部署服务器，常用�
 
 
 
-<h3 id="2-2-新建github-pages-仓库"><a href="#2-2-新建github-pages-仓库" class="headerlink" title="2.2 新建github pages 仓库"></a>2.2 新建github pages 仓库</h3><p>新建一个github项目，项目名为<code>&#123;username&#125;</code>.github.io，项目是public的而非private的。</p>
+<h3 id="2-2-新建github-pages-仓库"><a href="#2-2-新建github-pages-仓库" class="headerlink" title="2.2 新建github pages 仓库"></a>2.2 新建github pages 仓库</h3><p>新建一个github项目，项目名为&#96;&#96;{username}<code>.github.io</code>，项目是public的而非private的。</p>
 <p>修改本地hexo项目根目录下的 _config.yml文件，添加 deploy 相关的属性。</p>
-<p>需要指定发布项目的repo，这里因为我们用的是github pages，github pages通常是 <code>&#123;username&#125;</code>.github.io形式的public仓库。</p>
+<p>需要指定发布项目的repo，这里因为我们用的是github pages，github pages通常是<code> &#123;username&#125;</code>.github.io&#96;形式的public仓库。</p>
 <pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># Deployment</span>
 <span class="token comment">## Docs: https://hexo.io/docs/one-command-deployment</span>
 <span class="token key atrule">deploy</span><span class="token punctuation">:</span>
