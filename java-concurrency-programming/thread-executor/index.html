@@ -308,26 +308,26 @@ getCompletedTaskCount #完成的任务数
 
 
 
-<p><strong><code>ThreadPoolExecutor</code> 3 个最重要的参数：</strong></p>
+<p><code>ThreadPoolExecutor</code> 3 个最重要的参数：</p>
 <ul>
-<li><strong><code>corePoolSize</code> :</strong> 核心线程数线程数定义了最小可以同时运行的线程数量。</li>
-<li><strong><code>maximumPoolSize</code> :</strong> 最大池数量，注意：实际最大值在内部由 CAPACITY 限制</li>
-<li><strong><code>workQueue</code>:</strong> 当新任务来的时候会先判断当前运行的线程数量是否达到核心线程数，如果达到的话，新任务就会被存放在队列中。</li>
+<li><code>corePoolSize</code> : 核心线程数线程数定义了最小可以同时运行的线程数量。</li>
+<li><code>maximumPoolSize</code> :  最大池数量，注意：实际最大值在内部由 CAPACITY 限制</li>
+<li><code>workQueue</code>: 当新任务来的时候会先判断当前运行的线程数量是否达到核心线程数，如果达到的话，新任务就会被存放在队列中。</li>
 </ul>
 <p><code>ThreadPoolExecutor</code>其他常见参数:</p>
 <ol>
-<li><strong><code>keepAliveTime</code></strong>:当线程池中的线程数量大于 <code>corePoolSize</code> 的时候，如果这时没有新的任务提交，核心线程外的线程不会立即销毁，而是会等待，直到等待的时间超过了 <code>keepAliveTime</code>才会被回收销毁；</li>
-<li><strong><code>unit</code></strong> : <code>keepAliveTime</code> 参数的时间单位。</li>
-<li><strong><code>threadFactory</code></strong> :executor 创建新线程的时候会用到。</li>
-<li><strong><code>handler</code></strong> :饱和策略。关于饱和策略下面单独介绍一下。</li>
+<li><code>keepAliveTime</code>:当线程池中的线程数量大于 <code>corePoolSize</code> 的时候，如果这时没有新的任务提交，核心线程外的线程不会立即销毁，而是会等待，直到等待的时间超过了 <code>keepAliveTime</code>才会被回收销毁；</li>
+<li><code>unit</code> : <code>keepAliveTime</code> 参数的时间单位。</li>
+<li><code>threadFactory</code> :executor 创建新线程的时候会用到。</li>
+<li><code>handler</code> :饱和策略。关于饱和策略下面单独介绍一下。</li>
 </ol>
-<p><strong><code>ThreadPoolExecutor</code> 饱和策略定义:</strong></p>
+<p><code>ThreadPoolExecutor</code> 饱和策略定义:</p>
 <p>如果当前同时运行的线程数量达到最大线程数量并且队列也已经被放满了任务时，<code>ThreadPoolTaskExecutor</code> 定义一些策略:</p>
 <ul>
-<li>**<code>ThreadPoolExecutor.AbortPolicy</code>**：抛出 <code>RejectedExecutionException</code>来拒绝新任务的处理。默认是该策略</li>
-<li>**<code>ThreadPoolExecutor.CallerRunsPolicy</code>**：调用执行自己的线程运行任务。您不会任务请求。但是这种策略会降低对于新任务提交速度，影响程序的整体性能。另外，这个策略喜欢增加队列容量。对于可伸缩的应用程序，如果您的应用程序可以承受此延迟并且你不能任务丢弃任何一个任务请求的话，你可以选择这个策略。</li>
-<li><strong><code>ThreadPoolExecutor.DiscardPolicy</code>：</strong> 不处理新任务，直接丢弃掉。</li>
-<li><strong><code>ThreadPoolExecutor.DiscardOldestPolicy</code>：</strong> 此策略将丢弃最早的未处理的任务请求。</li>
+<li><code>ThreadPoolExecutor.AbortPolicy</code>：抛出 <code>RejectedExecutionException</code>来拒绝新任务的处理。默认是该策略</li>
+<li><code>ThreadPoolExecutor.CallerRunsPolicy</code>：调用执行自己的线程运行任务。您不会任务请求。但是这种策略会降低对于新任务提交速度，影响程序的整体性能。另外，这个策略喜欢增加队列容量。对于可伸缩的应用程序，如果您的应用程序可以承受此延迟并且你不能任务丢弃任何一个任务请求的话，你可以选择这个策略。</li>
+<li><code>ThreadPoolExecutor.DiscardPolicy</code>：不处理新任务，直接丢弃掉。</li>
+<li><code>ThreadPoolExecutor.DiscardOldestPolicy</code>： 此策略将丢弃最早的未处理的任务请求。</li>
 </ul>
 <h3 id="设置线程池名称"><a href="#设置线程池名称" class="headerlink" title="设置线程池名称"></a>设置线程池名称</h3><p>为了便于定位问题，线程池在实践中应当命名。</p>
 <ol>
@@ -537,10 +537,6 @@ getCompletedTaskCount #完成的任务数
                 <span class="token function">interruptIdleWorkers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">&#125;</span>
     <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-
-
-
-
 
 
 
