@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html  lang="zh-CN" >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#fff" id="theme-color">
+  <meta name="description" content="研发工程狮的博客">
+  <link rel="icon" href="/images/lightning.png">
+  <title>并发编程 - 解析 ThreadPoolExecutor</title>
+  
+  
+  <meta property="og:title" content="并发编程 - 解析 ThreadPoolExecutor">
+  
+  
+  <meta property="og:url" content="http://fuheihei.github.io/java-concurrency-programming/thread-executor/index.html">
+  
+  
+  <meta property="og:img" content="/images/barebears_icebear.jpeg">
+  
+  
+  <meta property="og:img" content="研发工程狮的博客">
+  
+  
+  <meta property="og:type" content="article">
+  <meta property="og:article:published_time" content="2022-05-26">
+  <meta property="og:article:modified_time" content="2022-05-26">
+  <meta property="og:article:author" content="Happy Monster">
+  
+  
+  <meta property="og:article:tag" content="concurrent">
+  
+  
+  
+  
+  <script>
+    // control reverse button
+    var reverseDarkList = {
+      dark: 'light',
+      light: 'dark'
+    };
+    var themeColor = {
+      dark: '#1c1c1e',
+      light: '#fff'
+    }
+    // get the data of css prefers-color-scheme
+    var getCssMediaQuery = function() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    };
+    // reverse current darkmode setting function
+    var reverseDarkModeSetting = function() {
+      var setting = localStorage.getItem('user-color-scheme');
+      if(reverseDarkList[setting]) {
+        setting = reverseDarkList[setting];
+      } else if(setting === null) {
+        setting = reverseDarkList[getCssMediaQuery()];
+      } else {
+        return;
+      }
+      localStorage.setItem('user-color-scheme', setting);
+      return setting;
+    };
+    // apply current darkmode setting
+    var setDarkmode = function(mode) {
+      var setting = mode || localStorage.getItem('user-color-scheme');
+      if(setting === getCssMediaQuery()) {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[setting];
+      } else if(reverseDarkList[setting]) {
+        document.documentElement.setAttribute('data-user-color-scheme', setting);
+        document.getElementById('theme-color').content = themeColor[setting];
+      } else {
+        document.documentElement.removeAttribute('data-user-color-scheme');
+        localStorage.removeItem('user-color-scheme');
+        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
+      }
+    };
+    setDarkmode();
+  </script>
+  <script>
+    function loadScript(url, cb) {
+      var script = document.createElement('script');
+      script.src = url;
+      if (cb) script.onload = cb;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  </script>
+  
+  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
+  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
+  
+  <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
+  <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
+  
+  
+  <link rel="preload" href="/js/lib/lozad.min.js" as="script">
+  
+  
+  
+  
+  
+  
+  <link rel="prefetch" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" as="script">
+  
+  
+  
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  
+  
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
+
+  
+  
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
+
+  
+  
+<link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
+
+  
+  
+  
+  
+  
+  
+  <link href="/js/lib/prism/prism-tomorrow.min.css" rel="stylesheet" data-prism="prism-tomorrow">
+  
+  
+  
+<link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
+
+  
+  
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <div class="wrapper">
+    
+    <nav class="navbar">
+  <div class="navbar-logo">
+    <span class="navbar-logo-main">
+      
+      <img class="navbar-logo-img" src="/images/lightning.png" alt="logo">
+      
+      <span class="navbar-logo-dsc">哈哈怪-博客</span>
+    </span>
+  </div>
+  <div class="navbar-menu">
+    
+    <a href="/" class="navbar-menu-item">
+    
+    首页
+    
+    </a>
+    
+    <a href="/archives" class="navbar-menu-item">
+    
+    归档
+    
+    </a>
+    
+    <a href="/tags" class="navbar-menu-item">
+    
+    标签
+    
+    </a>
+    
+    <a href="/categories" class="navbar-menu-item">
+    
+    分类
+    
+    </a>
+    
+    <a href="/about/index_cn" class="navbar-menu-item">
+    
+    关于我
+    
+    </a>
+    
+    <a class="navbar-menu-item darknavbar" id="dark"><i class="iconfont icon-weather"></i></a>
+    <a class="navbar-menu-item searchnavbar" id="search"><i class="iconfont icon-search" style="font-size: 1.2rem; font-weight: 400;"></i></a>
+  </div>
+</nav>
+    
+    <div id="local-search" style="display: none;">
+      <input class="navbar-menu-item" id="search-input" placeholder="请输入搜索内容...">
+      <div id="search-content"></div>
+    </div>
+    
+    <div class="section-wrap">
+      <div class="container">
+        <div class="columns">
+          <main class="main-column">
+<article class="card card-content">
+  <header>
+    <h1 class="post-title">
+      并发编程 - 解析 ThreadPoolExecutor
+    </h1>
+  </header>
+  <div class="post-meta post-show-meta">
+    <time datetime="2022-05-26T04:23:15.000Z">
+      <i class="iconfont icon-calendar" style="margin-right: 2px;"></i>
+      <span>2022-05-26</span>
+    </time>
+    
+    <span class="dot"></span>
+    
+    <a href="/categories/concurrent/" class="post-meta-link">concurrent</a>
+    
+    
+    
+    <span class="dot"></span>
+    <span>2.9k 字</span>
+    
+  </div>
+  
+  <div class="post-meta post-show-meta" style="margin-top: -10px;">
+    <div style="display: flex; align-items: center;">
+      <i class="iconfont icon-biaoqian" style="margin-right: 2px; font-size: 1.15rem;"></i>
+      
+      
+        <a href="/tags/concurrent/" class="post-meta-link">concurrent</a>
+      
+    </div>
+  </div>
+  
+  </header>
+  <div id="section" class="post-content">
+    <h2 id="解析ThreadPoolExecutor"><a href="#解析ThreadPoolExecutor" class="headerlink" title="解析ThreadPoolExecutor"></a>解析ThreadPoolExecutor</h2><p>本文通过源码解析 ThreadPoolExecutor，<br>来了解实践中如何设置线程池参数，分析美团线程池实践中如何动态设置线程池参数。</p>
+<h3 id="ThreadPoolExecutor-常用的方法"><a href="#ThreadPoolExecutor-常用的方法" class="headerlink" title="ThreadPoolExecutor 常用的方法"></a>ThreadPoolExecutor 常用的方法</h3><p>Executor</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token class-name">Runnable</span> command<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<hr>
+<p>ExecutorService</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">void</span> <span class="token function">shutdown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Runnable</span><span class="token punctuation">></span></span> <span class="token function">shutdownNow</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">boolean</span> <span class="token function">isShutdown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">boolean</span> <span class="token function">isTerminated</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">boolean</span> <span class="token function">awaitTermination</span><span class="token punctuation">(</span><span class="token keyword">long</span> timeout<span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span> unit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">Future</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">></span></span> <span class="token function">submit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Future</span><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">></span><span class="token punctuation">></span></span> <span class="token function">invokeAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">T</span> <span class="token function">invokeAny</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<hr>
+<p>ThreadPoolExecutor</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java">getPoolSize #线程池的线程数
+getActiveCount # 活跃线程数
+getCompletedTaskCount #完成的任务数
+<span class="token function">getQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  #队列中的任务数<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+<h3 id="ThreadPoolExecutor-构造函数"><a href="#ThreadPoolExecutor-构造函数" class="headerlink" title="ThreadPoolExecutor 构造函数"></a>ThreadPoolExecutor 构造函数</h3><p><code>Executors</code>的固定线程池，缓存线程池，单线程池也是通过构造ThreadPoolExecutor对象的方式构造出来的。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+     * 用给定的初始参数创建一个新的ThreadPoolExecutor。
+     */</span>
+    <span class="token keyword">public</span> <span class="token class-name">ThreadPoolExecutor</span><span class="token punctuation">(</span><span class="token keyword">int</span> corePoolSize<span class="token punctuation">,</span> <span class="token comment">//线程池的核心线程数量</span>
+                              <span class="token keyword">int</span> maximumPoolSize<span class="token punctuation">,</span><span class="token comment">//线程池的最大线程数</span>
+                              <span class="token keyword">long</span> keepAliveTime<span class="token punctuation">,</span>
+                              <span class="token comment">//当线程数大于核心线程数时，多余的空闲线程存活的最长时间</span>
+                              <span class="token class-name">TimeUnit</span> unit<span class="token punctuation">,</span><span class="token comment">//时间单位</span>
+                              <span class="token class-name">BlockingQueue</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Runnable</span><span class="token punctuation">></span></span> workQueue<span class="token punctuation">,</span>
+                              <span class="token comment">//任务队列，用来储存等待执行任务的队列</span>
+                              <span class="token class-name">ThreadFactory</span> threadFactory<span class="token punctuation">,</span><span class="token comment">//线程工厂，用来创建线程，一般默认即可</span>
+                              <span class="token class-name">RejectedExecutionHandler</span> handler
+                              <span class="token comment">//拒绝策略，当提交的任务过多而不能及时处理时，我们可以定制策略来处理任务</span>
+                               <span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>corePoolSize <span class="token operator">&lt;</span> <span class="token number">0</span> <span class="token operator">||</span>
+            maximumPoolSize <span class="token operator">&lt;=</span> <span class="token number">0</span> <span class="token operator">||</span>
+            maximumPoolSize <span class="token operator">&lt;</span> corePoolSize <span class="token operator">||</span>
+            keepAliveTime <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>workQueue <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> threadFactory <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> handler <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">NullPointerException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>corePoolSize <span class="token operator">=</span> corePoolSize<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>maximumPoolSize <span class="token operator">=</span> maximumPoolSize<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>workQueue <span class="token operator">=</span> workQueue<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>keepAliveTime <span class="token operator">=</span> unit<span class="token punctuation">.</span><span class="token function">toNanos</span><span class="token punctuation">(</span>keepAliveTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>threadFactory <span class="token operator">=</span> threadFactory<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>handler <span class="token operator">=</span> handler<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>使用阿里巴巴推荐的创建线程池的方式</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> CORE_POOL_SIZE <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">;</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> MAX_POOL_SIZE <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">int</span> QUEUE_CAPACITY <span class="token operator">=</span> <span class="token number">100</span><span class="token punctuation">;</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Long</span> KEEP_ALIVE_TIME <span class="token operator">=</span> <span class="token number">1L</span><span class="token punctuation">;</span>    
+
+<span class="token comment">//通过ThreadPoolExecutor构造函数自定义参数创建</span>
+<span class="token class-name">ThreadPoolExecutor</span> executor <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ThreadPoolExecutor</span><span class="token punctuation">(</span>
+  CORE_POOL_SIZE<span class="token punctuation">,</span>
+  MAX_POOL_SIZE<span class="token punctuation">,</span>
+  KEEP_ALIVE_TIME<span class="token punctuation">,</span>
+  <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>SECONDS<span class="token punctuation">,</span>
+  <span class="token keyword">new</span> <span class="token class-name">ArrayBlockingQueue</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">></span></span><span class="token punctuation">(</span>QUEUE_CAPACITY<span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token keyword">new</span> <span class="token class-name">ThreadPoolExecutor<span class="token punctuation">.</span>CallerRunsPolicy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p><strong><code>ThreadPoolExecutor</code> 3 个最重要的参数：</strong></p>
+<ul>
+<li><strong><code>corePoolSize</code> :</strong> 核心线程数线程数定义了最小可以同时运行的线程数量。</li>
+<li><strong><code>maximumPoolSize</code> :</strong> 最大池数量，注意：实际最大值在内部由 CAPACITY 限制</li>
+<li><strong><code>workQueue</code>:</strong> 当新任务来的时候会先判断当前运行的线程数量是否达到核心线程数，如果达到的话，新任务就会被存放在队列中。</li>
+</ul>
+<p><code>ThreadPoolExecutor</code>其他常见参数:</p>
+<ol>
+<li><strong><code>keepAliveTime</code></strong>:当线程池中的线程数量大于 <code>corePoolSize</code> 的时候，如果这时没有新的任务提交，核心线程外的线程不会立即销毁，而是会等待，直到等待的时间超过了 <code>keepAliveTime</code>才会被回收销毁；</li>
+<li><strong><code>unit</code></strong> : <code>keepAliveTime</code> 参数的时间单位。</li>
+<li><strong><code>threadFactory</code></strong> :executor 创建新线程的时候会用到。</li>
+<li><strong><code>handler</code></strong> :饱和策略。关于饱和策略下面单独介绍一下。</li>
+</ol>
+<p><strong><code>ThreadPoolExecutor</code> 饱和策略定义:</strong></p>
+<p>如果当前同时运行的线程数量达到最大线程数量并且队列也已经被放满了任务时，<code>ThreadPoolTaskExecutor</code> 定义一些策略:</p>
+<ul>
+<li>**<code>ThreadPoolExecutor.AbortPolicy</code>**：抛出 <code>RejectedExecutionException</code>来拒绝新任务的处理。默认是该策略</li>
+<li>**<code>ThreadPoolExecutor.CallerRunsPolicy</code>**：调用执行自己的线程运行任务。您不会任务请求。但是这种策略会降低对于新任务提交速度，影响程序的整体性能。另外，这个策略喜欢增加队列容量。对于可伸缩的应用程序，如果您的应用程序可以承受此延迟并且你不能任务丢弃任何一个任务请求的话，你可以选择这个策略。</li>
+<li><strong><code>ThreadPoolExecutor.DiscardPolicy</code>：</strong> 不处理新任务，直接丢弃掉。</li>
+<li><strong><code>ThreadPoolExecutor.DiscardOldestPolicy</code>：</strong> 此策略将丢弃最早的未处理的任务请求。</li>
+</ul>
+<h3 id="设置线程池名称"><a href="#设置线程池名称" class="headerlink" title="设置线程池名称"></a>设置线程池名称</h3><p>为了便于定位问题，线程池在实践中应当命名。</p>
+<ol>
+<li>利用 <code>ThreadFactoryBuilder</code></li>
+</ol>
+<p>	</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">ThreadFactory</span> threadFactory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ThreadFactoryBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                        <span class="token punctuation">.</span><span class="token function">setNameFormat</span><span class="token punctuation">(</span>threadNamePrefix <span class="token operator">+</span> <span class="token string">"-%d"</span><span class="token punctuation">)</span>
+                        <span class="token punctuation">.</span><span class="token function">setDaemon</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">ExecutorService</span> threadPool <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ThreadPoolExecutor</span><span class="token punctuation">(</span>corePoolSize<span class="token punctuation">,</span> maximumPoolSize<span class="token punctuation">,</span> keepAliveTime<span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>MINUTES<span class="token punctuation">,</span> workQueue<span class="token punctuation">,</span> threadFactory<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<ol start="2">
+<li>自己实现 <code>ThreadFactory</code></li>
+</ol>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>concurrent<span class="token punctuation">.</span></span><span class="token class-name">Executors</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>concurrent<span class="token punctuation">.</span></span><span class="token class-name">ThreadFactory</span></span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token import"><span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span>concurrent<span class="token punctuation">.</span>atomic<span class="token punctuation">.</span></span><span class="token class-name">AtomicInteger</span></span><span class="token punctuation">;</span>
+<span class="token comment">/**
+ * 线程工厂，它设置线程名称，有利于我们定位问题。
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">NamingThreadFactory</span> <span class="token keyword">implements</span> <span class="token class-name">ThreadFactory</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">AtomicInteger</span> threadNum <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AtomicInteger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">ThreadFactory</span> delegate<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">String</span> name<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * 创建一个带名字的线程池生产工厂
+     */</span>
+    <span class="token keyword">public</span> <span class="token class-name">NamingThreadFactory</span><span class="token punctuation">(</span><span class="token class-name">ThreadFactory</span> delegate<span class="token punctuation">,</span> <span class="token class-name">String</span> name<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>delegate <span class="token operator">=</span> delegate<span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> name<span class="token punctuation">;</span> <span class="token comment">// TODO consider uniquifying this</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token annotation punctuation">@Override</span> 
+    <span class="token keyword">public</span> <span class="token class-name">Thread</span> <span class="token function">newThread</span><span class="token punctuation">(</span><span class="token class-name">Runnable</span> r<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">Thread</span> t <span class="token operator">=</span> delegate<span class="token punctuation">.</span><span class="token function">newThread</span><span class="token punctuation">(</span>r<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        t<span class="token punctuation">.</span><span class="token function">setName</span><span class="token punctuation">(</span>name <span class="token operator">+</span> <span class="token string">" [#"</span> <span class="token operator">+</span> threadNum<span class="token punctuation">.</span><span class="token function">incrementAndGet</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"]"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> t<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h3 id="线程池状态"><a href="#线程池状态" class="headerlink" title="线程池状态"></a>线程池状态</h3><p>源码中runState和workerCount维护是放在一起的</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">AtomicInteger</span> ctl <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AtomicInteger</span><span class="token punctuation">(</span><span class="token function">ctlOf</span><span class="token punctuation">(</span>RUNNING<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>ctl的高3位保存runState，低29位保存workerCount</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">runStateOf</span><span class="token punctuation">(</span><span class="token keyword">int</span> c<span class="token punctuation">)</span>     <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> c <span class="token operator">&amp;</span> <span class="token operator">~</span>CAPACITY<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token comment">//计算当前运行状态</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">workerCountOf</span><span class="token punctuation">(</span><span class="token keyword">int</span> c<span class="token punctuation">)</span>  <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> c <span class="token operator">&amp;</span> CAPACITY<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>  <span class="token comment">//计算当前线程数量</span>
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">ctlOf</span><span class="token punctuation">(</span><span class="token keyword">int</span> rs<span class="token punctuation">,</span> <span class="token keyword">int</span> wc<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> rs <span class="token operator">|</span> wc<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>   <span class="token comment">//通过状态和线程数生成ctl</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+
+
+<table>
+<thead>
+<tr>
+<th>运行状态</th>
+<th>状态描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>running</td>
+<td>能接受新提交的任务，并能处理阻塞队列中的任务。</td>
+</tr>
+<tr>
+<td>Shutdown</td>
+<td>关闭状态，不再接受新提交的任务，但却可以继续处理阻塞队列中已保存的任务。</td>
+</tr>
+<tr>
+<td>Stop</td>
+<td>不能接受新任务，也不处理队列中的任务，会中断正在处理任务的线程。</td>
+</tr>
+<tr>
+<td>Tidying</td>
+<td>所有任务都终止了，workerCount为0</td>
+</tr>
+<tr>
+<td>Terminated</td>
+<td>在terminated() 方法执行完成后进入该状态</td>
+</tr>
+</tbody></table>
+<p><img src="/java-concurrency-programming/thread-executor/lifecyc-thread-pool.png" alt="lifecyc-thread-pool" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/java-concurrency-programming/thread-executor/lifecyc-thread-pool.png" class="lozad post-image"></p>
+<h3 id="任务调度过程"><a href="#任务调度过程" class="headerlink" title="任务调度过程"></a>任务调度过程</h3><ol>
+<li>首先检测线程池运行状态，如果不是RUNNING，则直接拒绝，线程池要保证在RUNNING的状态下执行任务。</li>
+<li>如果workerCount &lt; corePoolSize，则创建并启动一个线程来执行新提交的任务。</li>
+<li>如果workerCount &gt;&#x3D; corePoolSize，且线程池内的阻塞队列未满，则将任务添加到该阻塞队列中。</li>
+<li>如果workerCount &gt;&#x3D; corePoolSize &amp;&amp; workerCount &lt; maximumPoolSize，且线程池内的阻塞队列已满，则创建并启动一个线程来执行新提交的任务。</li>
+<li>如果workerCount &gt;&#x3D; maximumPoolSize，并且线程池内的阻塞队列已满, 则根据拒绝策略来处理该任务, 默认的处理方式是直接抛异常。</li>
+</ol>
+<p>阻塞队列</p>
+<p><img src="/java-concurrency-programming/thread-executor/thread-block-queue.png" alt="thread-block-queue.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/java-concurrency-programming/thread-executor/thread-block-queue.png" class="lozad post-image"></p>
+<h3 id="线程池核心问题：设置参数"><a href="#线程池核心问题：设置参数" class="headerlink" title="线程池核心问题：设置参数"></a>线程池核心问题：设置参数</h3><p>ThreadPoolExecutor主要有7个参数</p>
+<ol>
+<li><p><strong>corePoolSize</strong>：the number of threads to keep in the pool, even if they are idle, unless {@code allowCoreThreadTimeOut} is set</p>
+<p>（核心线程数大小：不管它们创建以后是不是空闲的。线程池需要保持 corePoolSize 数量的线程，除非设置了 allowCoreThreadTimeOut。）</p>
+</li>
+<li><p><strong>maximumPoolSize</strong>：the maximum number of threads to allow in the pool。</p>
+<p>（最大线程数：线程池中最多允许创建 maximumPoolSize 个线程。）</p>
+</li>
+<li><p><strong>keepAliveTime</strong>：when the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before terminating。</p>
+<p>（存活时间：如果经过 keepAliveTime 时间后，超过核心线程数的线程还没有接受到新的任务，那就回收。）</p>
+</li>
+<li><p><strong>unit：</strong>the time unit for the {@code keepAliveTime} argument</p>
+<p>（keepAliveTime 的时间单位。）</p>
+</li>
+<li><p><strong>workQueue</strong>：the queue to use for holding tasks before they are executed.  This queue will hold only the {@code Runnable} tasks submitted by the {@code execute} method。</p>
+<p>（存放待执行任务的队列：当提交的任务数超过核心线程数大小后，再提交的任务就存放在这里。它仅仅用来存放被 execute 方法提交的 Runnable 任务。所以这里就不要翻译为工作队列了，好吗？不要自己给自己挖坑。）</p>
+</li>
+<li><p><strong>threadFactory</strong>：the factory to use when the executor creates a new thread。</p>
+<p>（线程工程：用来创建线程工厂。比如这里面可以自定义线程名称，当进行虚拟机栈分析时，看着名字就知道这个线程是哪里来的，不会懵逼。）</p>
+</li>
+<li><p><strong>handler</strong> ：the handler to use when execution is blocked because the thread bounds and queue capacities are reached。</p>
+<p>（拒绝策略：当队列里面放满了任务、最大线程数的线程都在工作时，这时继续提交的任务线程池就处理不了，应该执行怎么样的拒绝策略。）</p>
+</li>
+</ol>
+<p>其中最重要的是3个参数：corePoolSize，maximumPoolSize，workQueue</p>
+<h4 id="corePoolSize"><a href="#corePoolSize" class="headerlink" title="corePoolSize"></a>corePoolSize</h4><p>有一个简单并且适用面比较广的公式：</p>
+<ul>
+<li><p><strong>CPU 密集型任务(N+1)：</strong> 这种任务消耗的主要是 CPU 资源，可以将线程数设置为 N（CPU 核心数）+1，比 CPU 核心数多出来的一个线程是为了防止线程偶发的缺页中断，或者其它原因导致的任务暂停而带来的影响。一旦任务暂停，CPU 就会处于空闲状态，而在这种情况下多出来的一个线程就可以充分利用 CPU 的空闲时间。(《Java并发编程实战》中的解释)</p>
+</li>
+<li><p><strong>I&#x2F;O 密集型任务(2N)：</strong> 这种任务应用起来，系统会用大部分的时间来处理 I&#x2F;O 交互，而线程在处理 I&#x2F;O 的时间段内不会占用 CPU 来处理，这时就可以将 CPU 交出给其它线程使用。因此在 I&#x2F;O 密集型任务的应用中，我们可以多配置一些线程，具体的计算方法是 2N。</p>
+</li>
+</ul>
+<p>获取处理器逻辑核心数量</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">int</span> N_CPUS <span class="token operator">=</span> <span class="token class-name">Runtime</span><span class="token punctuation">.</span><span class="token function">getRuntime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">availableProcessors</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+
+
+<p><strong>如何判断是 CPU 密集任务还是 IO 密集任务？</strong></p>
+<p>CPU 密集型简单理解就是利用 CPU 计算能力的任务比如你在内存中对大量数据进行排序。</p>
+<p>但凡涉及到网络读取，文件读取这类都是 IO 密集型，这类任务的特点是 CPU 计算耗费时间相比于等待 IO 操作完成的时间来说很少，大部分时间都花在了等待 IO 操作完成上。</p>
+<p>美团在实践中提出了将线程池参数动态化的方式</p>
+<h4 id="线程池预热"><a href="#线程池预热" class="headerlink" title="线程池预热"></a>线程池预热</h4><p>线程池被创建后如果没有任务过来，里面是不会有线程的。如果需要预热的话可以调用下面的两个方法</p>
+<p>第一个是全启动</p>
+<p>第二个是仅启动一个</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+ * Starts all core threads, causing them to idly wait for work. This
+ * overrides the default policy of starting core threads only when
+ * new tasks are executed.
+ *
+ * @return the number of threads started
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">prestartAllCoreThreads</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">int</span> n <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token function">addWorker</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token operator">++</span>n<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> n<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+
+<span class="token comment">/**
+ * Starts a core thread, causing it to idly wait for work. This
+ * overrides the default policy of starting core threads only when
+ * new tasks are executed. This method will return &#123;@code false&#125;
+ * if all core threads have already been started.
+ *
+ * @return &#123;@code true&#125; if a thread was started
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">prestartCoreThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token function">workerCountOf</span><span class="token punctuation">(</span>ctl<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> corePoolSize <span class="token operator">&amp;&amp;</span>
+        <span class="token function">addWorker</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<h4 id="核心线程数会被回收吗"><a href="#核心线程数会被回收吗" class="headerlink" title="核心线程数会被回收吗"></a>核心线程数会被回收吗</h4><p>核心线程数默认不会被回收。</p>
+<p>线程池中线程的销毁依赖JVM自动的回收，线程池做的工作是根据当前线程池的状态维护一定数量的线程引用，防止这部分线程被JVM回收，当线程池决定哪些线程需要回收时，只需要将其引用消除即可。Worker被创建出来后，就会不断地进行轮询，然后获取任务去执行，核心线程可以无限等待获取任务，非核心线程要限时获取任务。当Worker无法获取到任务，也就是获取的任务为空时，循环会结束，<strong>Worker会主动消除自身在线程池内的引用</strong>。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>task <span class="token operator">!=</span> <span class="token keyword">null</span> <span class="token operator">||</span> <span class="token punctuation">(</span>task <span class="token operator">=</span> <span class="token function">getTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">//执行任务</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span>
+  <span class="token function">processWorkerExit</span><span class="token punctuation">(</span>w<span class="token punctuation">,</span> completedAbruptly<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//获取不到任务时，主动回收自己</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p><img src="/java-concurrency-programming/thread-executor/thread-collect.png" alt="thread-collect.png" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="/java-concurrency-programming/thread-executor/thread-collect.png" class="lozad post-image"></p>
+<p>如需回收核心线程数，需要调用下面的方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+     * Sets the policy governing whether core threads may time out and
+     * terminate if no tasks arrive within the keep-alive time, being
+     * replaced if needed when new tasks arrive. When false, core
+     * threads are never terminated due to lack of incoming
+     * tasks. When true, the same keep-alive policy applying to
+     * non-core threads applies also to core threads. To avoid
+     * continual thread replacement, the keep-alive time must be
+     * greater than zero when setting &#123;@code true&#125;. This method
+     * should in general be called before the pool is actively used.
+     *
+     * @param value &#123;@code true&#125; if should time out, else &#123;@code false&#125;
+     * @throws IllegalArgumentException if value is &#123;@code true&#125;
+     *         and the current keep-alive time is not greater than zero
+     *
+     * @since 1.6
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">allowCoreThreadTimeOut</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> value<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">&amp;&amp;</span> keepAliveTime <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Core threads must have nonzero keep alive times"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">!=</span> allowCoreThreadTimeOut<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            allowCoreThreadTimeOut <span class="token operator">=</span> value<span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+                <span class="token function">interruptIdleWorkers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+
+
+
+
+
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://tech.meituan.com/2020/04/02/java-pooling-pratice-in-meituan.html">美团线程池实践</a></p>
+
+  </div>
+  <div>
+  
+  <div class="post-note note-warning copyright" style="margin-top: 42px">
+    <p><span style="font-weight: bold;">作者：</span><a target="_blank" rel="nofollow noopener noreferrer" href="http://fuheihei.github.io/about">Happy Monster</a></p>
+    <p><span style="font-weight: bold;">文章链接：</span><a target="_blank" rel="nofollow noopener noreferrer" href="http://fuheihei.github.io/java-concurrency-programming/thread-executor/">http://fuheihei.github.io/java-concurrency-programming/thread-executor/</a></p>
+    <p><span style="font-weight: bold;">版权声明：</span>原创博客，转载请注明出处</p>
+  </div>
+  
+  </div>
+</article>
+<div class="nav">
+  
+  
+  <div class="nav-item-next">
+    <a href="/java-concurrency-programming/thread-pool/" class="nav-link">
+      <div>
+        <div class="nav-label">下一篇</div>
+        
+        <div class="nav-title">并发编程 - 线程池 Thread Pool </div>
+        
+      </div>
+      <i class="iconfont icon-right nav-next-icon"></i>
+    </a>
+  </div>
+  
+</div>
+
+<div class="card card-content comment-card" style="margin-top: 16px;">
+  <div class="comment-card-title">评论</div>
+  
+  <div id="gitalk-container"></div>
+  
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+  
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+  
+<script src="/js/lib/md5.min.js"></script>
+
+  <script>
+    var gitalk = new Gitalk({
+      clientID: '184b8742c46374f5db54',
+      clientSecret: '6595a5cdd7ed8d21409d80b9bfbf5cd2a2c494d7',
+      repo: 'fuheihei.github.io',
+      owner: 'fuheihei',
+      admin: "fuheihei",
+      id: md5(location.href),
+      distractionFreeMode: false,
+      language: 'navigator.language || navigator.userLanguage',
+      labels: ["Gitalk"],
+      perPage: 10
+    })
+
+    gitalk.render('gitalk-container')
+  </script>
+
+</div>
+
+<div class="card card-content toc-card" id="mobiletoc">
+  <div class="toc-header"><i class="iconfont icon-menu" style="padding-right: 2px;"></i>目录</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E6%9E%90ThreadPoolExecutor"><span class="toc-text">解析ThreadPoolExecutor</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ThreadPoolExecutor-%E5%B8%B8%E7%94%A8%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-text">ThreadPoolExecutor 常用的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ThreadPoolExecutor-%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-text">ThreadPoolExecutor 构造函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%90%8D%E7%A7%B0"><span class="toc-text">设置线程池名称</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%8A%B6%E6%80%81"><span class="toc-text">线程池状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E8%BF%87%E7%A8%8B"><span class="toc-text">任务调度过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98%EF%BC%9A%E8%AE%BE%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="toc-text">线程池核心问题：设置参数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#corePoolSize"><span class="toc-text">corePoolSize</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E9%A2%84%E7%83%AD"><span class="toc-text">线程池预热</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%BA%BF%E7%A8%8B%E6%95%B0%E4%BC%9A%E8%A2%AB%E5%9B%9E%E6%94%B6%E5%90%97"><span class="toc-text">核心线程数会被回收吗</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol></li></ol>
+</div></main>
+          <aside class="left-column">
+            
+            <div class="card card-author">
+              
+<img src="/images/barebears_icebear.jpeg" class="author-img">
+
+<p class="author-name">Happy Monster</p>
+<p class="author-description">研发工程狮</p>
+<div class="author-message">
+  <a class="author-posts-count" href="/archives">
+    <span>4</span>
+    <span>文章</span>
+  </a>
+  <a class="author-categories-count" href="/categories">
+    <span>2</span>
+    <span>分类</span>
+  </a>
+  <a class="author-tags-count" href="/tags">
+    <span>2</span>
+    <span>标签</span>
+  </a>
+</div>
+
+<div class="author-card-society">
+  
+    <div class="author-card-society-icon">
+      <a target="_blank" rel="noopener" href="https://github.com/fuheihei">
+        <i class="iconfont /images/github.png society-icon"></i>
+      </a>
+    </div>
+  
+</div>
+
+            </div>
+            
+            <div class="sticky-tablet">
+  
+  
+  <article class="display-when-two-columns spacer">
+    <div class="card card-content toc-card">
+      <div class="toc-header"><i class="iconfont icon-menu" style="padding-right: 2px;"></i>目录</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E6%9E%90ThreadPoolExecutor"><span class="toc-text">解析ThreadPoolExecutor</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ThreadPoolExecutor-%E5%B8%B8%E7%94%A8%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-text">ThreadPoolExecutor 常用的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ThreadPoolExecutor-%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-text">ThreadPoolExecutor 构造函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%90%8D%E7%A7%B0"><span class="toc-text">设置线程池名称</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%8A%B6%E6%80%81"><span class="toc-text">线程池状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E8%BF%87%E7%A8%8B"><span class="toc-text">任务调度过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98%EF%BC%9A%E8%AE%BE%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="toc-text">线程池核心问题：设置参数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#corePoolSize"><span class="toc-text">corePoolSize</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E9%A2%84%E7%83%AD"><span class="toc-text">线程池预热</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%BA%BF%E7%A8%8B%E6%95%B0%E4%BC%9A%E8%A2%AB%E5%9B%9E%E6%94%B6%E5%90%97"><span class="toc-text">核心线程数会被回收吗</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol></li></ol>
+    </div>
+  </article>
+  
+  
+  <article class="card card-content categories-widget">
+    <div class="categories-card">
+  <div class="categories-header"><i class="iconfont icon-fenlei" style="padding-right: 2px;"></i>分类</div>
+  <div class="categories-list">
+    
+      <a href="/categories/concurrent/">
+        <div class="categories-list-item">
+          concurrent
+          <span class="categories-list-item-badge">2</span>
+        </div>
+      </a>
+    
+      <a href="/categories/tools/">
+        <div class="categories-list-item">
+          tools
+          <span class="categories-list-item-badge">2</span>
+        </div>
+      </a>
+    
+  </div>
+</div>
+  </article>
+  
+  <article class="card card-content tags-widget">
+    <div class="tags-card">
+  <div class="tags-header"><i class="iconfont icon-biaoqian" style="padding-right: 2px;"></i>热门标签</div>
+  <div class="tags-list">
+    
+    <a href="/tags/blog/" title="blog"><div class="tags-list-item">blog</div></a>
+    
+    <a href="/tags/concurrent/" title="concurrent"><div class="tags-list-item">concurrent</div></a>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+          </aside>
+          <aside class="right-column">
+            <div class="sticky-widescreen">
+  
+  
+  <article class="card card-content toc-card">
+    <div class="toc-header"><i class="iconfont icon-menu" style="padding-right: 2px;"></i>目录</div>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E6%9E%90ThreadPoolExecutor"><span class="toc-text">解析ThreadPoolExecutor</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ThreadPoolExecutor-%E5%B8%B8%E7%94%A8%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-text">ThreadPoolExecutor 常用的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ThreadPoolExecutor-%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-text">ThreadPoolExecutor 构造函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%90%8D%E7%A7%B0"><span class="toc-text">设置线程池名称</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%8A%B6%E6%80%81"><span class="toc-text">线程池状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6%E8%BF%87%E7%A8%8B"><span class="toc-text">任务调度过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98%EF%BC%9A%E8%AE%BE%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="toc-text">线程池核心问题：设置参数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#corePoolSize"><span class="toc-text">corePoolSize</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E9%A2%84%E7%83%AD"><span class="toc-text">线程池预热</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%BA%BF%E7%A8%8B%E6%95%B0%E4%BC%9A%E8%A2%AB%E5%9B%9E%E6%94%B6%E5%90%97"><span class="toc-text">核心线程数会被回收吗</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol></li></ol>
+  </article>
+  
+  
+  <article class="card card-content">
+    <div class="recent-posts-card">
+  <div class="recent-posts-header"><i class="iconfont icon-wenzhang_huaban" style="padding-right: 2px;"></i>最近文章</div>
+  <div class="recent-posts-list">
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-05-26</div>
+        <a href="/java-concurrency-programming/thread-executor/"><div class="recent-posts-item-content">并发编程 - 解析 ThreadPoolExecutor</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-05-25</div>
+        <a href="/java-concurrency-programming/thread-pool/"><div class="recent-posts-item-content">并发编程 - 线程池 Thread Pool</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-04-16</div>
+        <a href="/tools/how-to-write-blog/"><div class="recent-posts-item-content">如何写博客</div></a>
+      </div>
+    
+      <div class="recent-posts-item">
+        <div class="recent-posts-item-title">2022-04-15</div>
+        <a href="/tools/how-to-build-my-blog/"><div class="recent-posts-item-content">个人博客搭建</div></a>
+      </div>
+    
+  </div>
+</div>
+  </article>
+  
+  
+</div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="footer">
+  <div class="footer-container">
+    <div>
+      <div class="footer-dsc">
+        <span>Copyright ©
+          
+          2022 -
+          
+          2022
+        </span>
+        &nbsp;
+        <a href="/" class="footer-link">哈哈怪-博客 </a>
+      </div>
+    </div>
+
+    
+    <div class="footer-dsc">
+      
+      Powered by
+      <a href="https://hexo.io/" class="footer-link" target="_blank" rel="nofollow noopener noreferrer">&nbsp;Hexo </a>
+      
+      
+      <span>&nbsp;|&nbsp;</span>
+      
+      
+      Theme -
+      <a href="https://github.com/theme-kaze" class="footer-link" target="_blank"
+        rel="nofollow noopener noreferrer">&nbsp;Kaze</a>
+      
+    </div>
+    
+    
+    
+    
+      <div class="footer-dsc">
+        
+        本站总访问量<span id="busuanzi_value_site_pv"></span>次
+        
+        
+        <span>&nbsp;|&nbsp;</span>
+        
+        
+        本站总访客数<span id="busuanzi_value_site_uv"></span>次
+        
+      </div>
+      
+    
+</footer>
+  <a role="button" id="scrollbutton" class="basebutton"  aria-label="回到顶部">
+  <i class="iconfont icon-arrowleft button-icon"></i>
+</a>
+<a role="button" id="menubutton" class="basebutton">
+  <i class="iconfont icon-menu button-icon"></i>
+</a>
+<a role="button" id="popbutton" class="basebutton" aria-label="控制中心">
+  <i class="iconfont icon-expand button-icon"></i>
+</a>
+<a role="button" id="darkbutton" class="basebutton darkwidget" aria-label="夜色模式">
+  <i class="iconfont icon-weather button-icon"></i>
+</a>
+<a role="button" id="searchbutton" class="basebutton searchwidget" aria-label="搜索">
+  <i class="iconfont icon-search button-icon"></i>
+</a>
+
+  
+  
+  
+  <script>
+  var addImgLayout = function () {
+    var img = document.querySelectorAll('.post-content img');
+    var i;
+    for (i = 0; i < img.length; i++) {
+      var wrapper = document.createElement('a');
+      wrapper.setAttribute('href', img[i].getAttribute('data-src'));
+      wrapper.setAttribute('aria-label', 'illustration');
+      wrapper.style.cssText = 'width: 100%; display: flex; justify-content: center;';
+      if (img[i].alt) wrapper.dataset.caption = img[i].alt;
+      wrapper.dataset.nolink = true;
+      img[i].before(wrapper);
+      wrapper.append(img[i]);
+      var divWrap = document.createElement('div');
+      divWrap.classList.add('gallery');
+      wrapper.before(divWrap);
+      divWrap.append(wrapper);
+    }
+    baguetteBox.run('.gallery');
+  }
+</script>
+<script>loadScript("/js/lib/lightbox/baguetteBox.min.js", addImgLayout)</script>
+  
+  
+  
+<script src="/js/main.js"></script>
+
+  
+  <script>loadScript("/js/lib/busuanzi.min.js")</script>
+  
+  
+  <script>
+    var addLazyload = function () {
+      var observer = lozad('.lozad', {
+        load: function (el) {
+          el.srcset = el.getAttribute('data-src');
+        },
+        loaded: function (el) {
+          el.classList.add('loaded');
+        }
+      });
+      observer.observe();
+    }
+  </script>
+  <script>loadScript("/js/lib/lozad.min.js", addLazyload)</script>
+  
+  
+</body>
+
+</html>
