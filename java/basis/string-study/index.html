@@ -8,13 +8,13 @@
   <meta name="theme-color" content="#fff" id="theme-color">
   <meta name="description" content="研发工程狮的博客">
   <link rel="icon" href="/images/lightning.png">
-  <title>如何写博客</title>
+  <title>Java基础 - String，StringBuilder，StringBuffer</title>
   
   
-  <meta property="og:title" content="如何写博客">
+  <meta property="og:title" content="Java基础 - String，StringBuilder，StringBuffer">
   
   
-  <meta property="og:url" content="http://fuheihei.github.io/tools/how-to-write-blog/index.html">
+  <meta property="og:url" content="http://fuheihei.github.io/java/basis/string-study/index.html">
   
   
   <meta property="og:img" content="/images/barebears_icebear.jpeg">
@@ -24,12 +24,12 @@
   
   
   <meta property="og:type" content="article">
-  <meta property="og:article:published_time" content="2022-04-16">
-  <meta property="og:article:modified_time" content="2022-04-17">
+  <meta property="og:article:published_time" content="2022-05-29">
+  <meta property="og:article:modified_time" content="2022-05-29">
   <meta property="og:article:author" content="Happy Monster">
   
   
-  <meta property="og:article:tag" content="blog">
+  <meta property="og:article:tag" content="java基础">
   
   
   
@@ -201,23 +201,23 @@
 <article class="card card-content">
   <header>
     <h1 class="post-title">
-      如何写博客
+      Java基础 - String，StringBuilder，StringBuffer
     </h1>
   </header>
   <div class="post-meta post-show-meta">
-    <time datetime="2022-04-16T00:03:15.000Z">
+    <time datetime="2022-05-29T06:23:15.000Z">
       <i class="iconfont icon-calendar" style="margin-right: 2px;"></i>
-      <span>2022-04-16</span>
+      <span>2022-05-29</span>
     </time>
     
     <span class="dot"></span>
     
-    <a href="/categories/tools/" class="post-meta-link">tools</a>
+    <a href="/categories/java基础/" class="post-meta-link">java基础</a>
     
     
     
     <span class="dot"></span>
-    <span>265 字</span>
+    <span>575 字</span>
     
   </div>
   
@@ -226,40 +226,68 @@
       <i class="iconfont icon-biaoqian" style="margin-right: 2px; font-size: 1.15rem;"></i>
       
       
-        <a href="/tags/blog/" class="post-meta-link">blog</a>
+        <a href="/tags/java基础/" class="post-meta-link">java基础</a>
       
     </div>
   </div>
   
   </header>
   <div id="section" class="post-content">
-    <p>我建立博客的初心是记录技术，并将自己在编程中学到的知识，写成规范的文档形式，尽力做到对自己对他人都是有帮助的。</p>
-<h3 id="1-文档工具"><a href="#1-文档工具" class="headerlink" title="1. 文档工具"></a>1. 文档工具</h3><p>文档文件格式还是markdown为主</p>
-<h3 id="2-markdown写作规范"><a href="#2-markdown写作规范" class="headerlink" title="2. markdown写作规范"></a>2. markdown写作规范</h3><p>写作规范详细参考github上的 <a target="_blank" rel="noopener" href="https://github.com/fex-team/styleguide/blob/master/markdown.md">Markdown 编写规范-中文</a></p>
-<h3 id="3-字体"><a href="#3-字体" class="headerlink" title="3. 字体"></a>3. 字体</h3><p>字体颜色，正常字体是默认的黑色，参考配色的颜色设计网站</p>
-<p><a target="_blank" rel="noopener" href="https://flatuicolors.com/palette/defo">1 - FlatUI 配色</a></p>
-<p><a target="_blank" rel="noopener" href="https://ant.design/docs/spec/colors-cn#%E5%9C%A8%E4%BB%A3%E7%A0%81%E4%B8%AD%E4%BD%BF%E7%94%A8%E8%89%B2%E6%9D%BF">2 - Ant Design 配色</a></p>
-<p><span style="color:#fe6673">红色 #fe6673 </span> 重要的内容</p>
-<p><span style="color:#3498db">蓝色 #3498db</span> 新名词首次出现</p>
-<p><span style="color:#f1c40f">黄色 #f1c40f</span> warning警告相关的颜色</p>
-<p><span style="color:#27ae60">绿色 #27ae60</span> 论证过程，或者过程性质的代码</p>
-<p>如下所示，在md中嵌入html标签</p>
-<pre class="line-numbers language-html" data-language="html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token special-attr"><span class="token attr-name">style</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token value css language-css"><span class="token property">color</span><span class="token punctuation">:</span>...</span><span class="token punctuation">"</span></span></span><span class="token punctuation">></span></span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">></span></span> <span class="token comment">&lt;!--用标签包裹需要上色的文字--></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+    <h2 id="String，StringBuilder，StringBuffer"><a href="#String，StringBuilder，StringBuffer" class="headerlink" title="String，StringBuilder，StringBuffer"></a>String，StringBuilder，StringBuffer</h2><h4 id="String不可变性质"><a href="#String不可变性质" class="headerlink" title="String不可变性质"></a>String不可变性质</h4><p><code>String</code> 类中使用 <code>final</code> 关键字修饰字符数组来保存字符串。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">String</span> <span class="token keyword">implements</span> <span class="token class-name"><span class="token namespace">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span></span>Serializable</span><span class="token punctuation">,</span> <span class="token class-name">Comparable</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">></span></span><span class="token punctuation">,</span> <span class="token class-name">CharSequence</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token keyword">char</span> value<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+	<span class="token comment">//...</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-<h3 id="4-代码"><a href="#4-代码" class="headerlink" title="4. 代码"></a>4. 代码</h3><p>代码部分格式以markdown样式为主，分为大的代码块（带行号）和普通代码行。</p>
-<pre class="line-numbers language-java" data-language="java"><code class="language-java">hello world <span class="token comment">//代码块</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>修正： 我们知道被 <code>final</code> 关键字修饰的类不能被继承，修饰的方法不能被重写，修饰的变量是基本数据类型则值不能改变，修饰的变量是引用类型则不能再指向其他对象。因此，<code>final</code> 关键字修饰的数组保存字符串并不是 <code>String</code> 不可变的根本原因，因为这个数组保存的字符串是可变的（<code>final</code> 修饰引用类型变量的情况）。</p>
+<p><code>String</code> 真正不可变有下面几点原因：</p>
+<ol>
+<li>保存<font color="#fe6673">字符串</font>的数组被 <code>final</code> 修饰且为私有的，并且<code>String</code> 类没有提供&#x2F;暴露修改这个字符串的方法。</li>
+<li><code>String</code> 类被 <code>final</code> 修饰导致其不能被继承，进而避免了<font color="#fe6673">子类</font>破坏 <code>String</code> 不可变。</li>
+</ol>
+</blockquote>
+<p>Java 9之后，String, StringBuilder, StringBuffer类的实现改用 byte 数组存储字符串</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> value<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<p><code>hello world</code> 普通代码行</p>
-<h3 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h3><p>每天进步一点点，保持笔记的清晰有条理。</p>
+<blockquote>
+<p>为什么使用byte字节而舍弃了char字符 ?</p>
+<p>节省内存占用，byte占一个字节(8位)，char占用2个字节（16），相较char节省一半的内存空间。节省gc压力。<br>针对初始化的字符，对字符长度进行判断选择不同的编码方式。如果是 LATIN-1 编码，则右移0位，数组长度即为字符串长度。而如果是 UTF16 编码，则右移1位，数组长度的二分之一为字符串长度。</p>
+</blockquote>
+<h4 id="String不可变的好处"><a href="#String不可变的好处" class="headerlink" title="String不可变的好处"></a>String不可变的好处</h4><p>安全性</p>
+<p>将String对象传递给其他函数，可以不变</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">String</span> s<span class="token operator">=</span><span class="token string">"aaa"</span><span class="token punctuation">;</span>
+    <span class="token class-name">StringBuilder</span> sb<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">StringBuilder</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">appendStr</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">appendStrBuilder</span><span class="token punctuation">(</span>sb<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// aaa</span>
+    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>sb<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">// aaabbb</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">appendStr</span><span class="token punctuation">(</span><span class="token class-name">String</span> s<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    s <span class="token operator">+=</span><span class="token string">"bbb"</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">appendStrBuilder</span><span class="token punctuation">(</span><span class="token class-name">StringBuilder</span> sb<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    sb<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">"bbb"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
+<p>对于上述例子，将String对象传入函数，s 的值是不变的。</p>
+<p>因此在HashSet存取字符串对象时，应当选取安全的String类。若是StringBuilder则要注意是否存在不安全性，代码中是否存在修改StringBuilder对象的情形。</p>
+<p><font color="#fe6673">千万不要用可变类型做HashMap和HashSet键值。</font></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/20618891/answer/114125846">【知乎】如何理解String不可变</a></p>
 
   </div>
   <div>
   
   <div class="post-note note-warning copyright" style="margin-top: 42px">
     <p><span style="font-weight: bold;">作者：</span><a target="_blank" rel="nofollow noopener noreferrer" href="http://fuheihei.github.io/about">Happy Monster</a></p>
-    <p><span style="font-weight: bold;">文章链接：</span><a target="_blank" rel="nofollow noopener noreferrer" href="http://fuheihei.github.io/tools/how-to-write-blog/">http://fuheihei.github.io/tools/how-to-write-blog/</a></p>
+    <p><span style="font-weight: bold;">文章链接：</span><a target="_blank" rel="nofollow noopener noreferrer" href="http://fuheihei.github.io/java/basis/string-study/">http://fuheihei.github.io/java/basis/string-study/</a></p>
     <p><span style="font-weight: bold;">版权声明：</span>原创博客，转载请注明出处</p>
   </div>
   
@@ -267,25 +295,13 @@
 </article>
 <div class="nav">
   
-  <div class="nav-item-prev">
-    <a href="/java-concurrency-programming/thread-pool/" class="nav-link">
-      <i class="iconfont icon-left nav-prev-icon"></i>
-      <div>
-        <div class="nav-label">上一篇</div>
-        
-        <div class="nav-title">并发编程 - 线程池 Thread Pool </div>
-        
-      </div>
-    </a>
-  </div>
-  
   
   <div class="nav-item-next">
-    <a href="/tools/how-to-build-my-blog/" class="nav-link">
+    <a href="/java/basis/common/" class="nav-link">
       <div>
         <div class="nav-label">下一篇</div>
         
-        <div class="nav-title">个人博客搭建 </div>
+        <div class="nav-title">Java基础 - 零碎知识点 </div>
         
       </div>
       <i class="iconfont icon-right nav-next-icon"></i>
@@ -328,7 +344,7 @@
 
 <div class="card card-content toc-card" id="mobiletoc">
   <div class="toc-header"><i class="iconfont icon-menu" style="padding-right: 2px;"></i>目录</div>
-<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%96%87%E6%A1%A3%E5%B7%A5%E5%85%B7"><span class="toc-text">1. 文档工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-markdown%E5%86%99%E4%BD%9C%E8%A7%84%E8%8C%83"><span class="toc-text">2. markdown写作规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%AD%97%E4%BD%93"><span class="toc-text">3. 字体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BB%A3%E7%A0%81"><span class="toc-text">4. 代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%80%BB%E7%BB%93"><span class="toc-text">5. 总结</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#String%EF%BC%8CStringBuilder%EF%BC%8CStringBuffer"><span class="toc-text">String，StringBuilder，StringBuffer</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#String%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%80%A7%E8%B4%A8"><span class="toc-text">String不可变性质</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#String%E4%B8%8D%E5%8F%AF%E5%8F%98%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="toc-text">String不可变的好处</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol></li></ol>
 </div></main>
           <aside class="left-column">
             
@@ -377,7 +393,7 @@
   <article class="display-when-two-columns spacer">
     <div class="card card-content toc-card">
       <div class="toc-header"><i class="iconfont icon-menu" style="padding-right: 2px;"></i>目录</div>
-<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%96%87%E6%A1%A3%E5%B7%A5%E5%85%B7"><span class="toc-text">1. 文档工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-markdown%E5%86%99%E4%BD%9C%E8%A7%84%E8%8C%83"><span class="toc-text">2. markdown写作规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%AD%97%E4%BD%93"><span class="toc-text">3. 字体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BB%A3%E7%A0%81"><span class="toc-text">4. 代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%80%BB%E7%BB%93"><span class="toc-text">5. 总结</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#String%EF%BC%8CStringBuilder%EF%BC%8CStringBuffer"><span class="toc-text">String，StringBuilder，StringBuffer</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#String%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%80%A7%E8%B4%A8"><span class="toc-text">String不可变性质</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#String%E4%B8%8D%E5%8F%AF%E5%8F%98%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="toc-text">String不可变的好处</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol></li></ol>
     </div>
   </article>
   
@@ -436,7 +452,7 @@
   
   <article class="card card-content toc-card">
     <div class="toc-header"><i class="iconfont icon-menu" style="padding-right: 2px;"></i>目录</div>
-<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%96%87%E6%A1%A3%E5%B7%A5%E5%85%B7"><span class="toc-text">1. 文档工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-markdown%E5%86%99%E4%BD%9C%E8%A7%84%E8%8C%83"><span class="toc-text">2. markdown写作规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%AD%97%E4%BD%93"><span class="toc-text">3. 字体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BB%A3%E7%A0%81"><span class="toc-text">4. 代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%80%BB%E7%BB%93"><span class="toc-text">5. 总结</span></a></li></ol>
+<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#String%EF%BC%8CStringBuilder%EF%BC%8CStringBuffer"><span class="toc-text">String，StringBuilder，StringBuffer</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#String%E4%B8%8D%E5%8F%AF%E5%8F%98%E6%80%A7%E8%B4%A8"><span class="toc-text">String不可变性质</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#String%E4%B8%8D%E5%8F%AF%E5%8F%98%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="toc-text">String不可变的好处</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol></li></ol>
   </article>
   
   
