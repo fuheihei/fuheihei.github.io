@@ -1,239 +1,299 @@
+
+
 <!DOCTYPE html>
-<html  lang="zh-CN" >
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="theme-color" content="#fff" id="theme-color">
-  <meta name="description" content="研发工程狮的博客">
-  <link rel="icon" href="/images/lightning.png">
-  <title>个人博客搭建</title>
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Haha monster">
+  <meta name="keywords" content="Java,Web,Database">
   
-  <meta property="og:title" content="个人博客搭建">
-  
-  
-  <meta property="og:url" content="http://fuheihei.github.io/tools/how-to-build-my-blog/index.html">
-  
-  
-  <meta property="og:img" content="/images/barebears_icebear.jpeg">
-  
-  
-  <meta property="og:img" content="研发工程狮的博客">
-  
-  
-  <meta property="og:type" content="article">
-  <meta property="og:article:published_time" content="2022-04-15">
-  <meta property="og:article:modified_time" content="2022-04-29">
-  <meta property="og:article:author" content="Happy Monster">
-  
-  
-  <meta property="og:article:tag" content="blog">
+    <meta name="description" content="搭建个人博客 hexo+kaze+gitalk。 我们经常会看到github有人有&lt;username&gt;.github.io形式的个人博客网页，他们是怎么做到的呢？ 仔细观察，不少人的博客底部还会出现 “powered by hexo” 或者 “由hexo强力驱动” 的字样 通过下文，你也可以搭建一个自己的github pages博客 1.Github Pages没错，浏览器中url为&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="个人博客搭建">
+<meta property="og:url" content="http://fuheihei.github.io/tools/how-to-build-my-blog/">
+<meta property="og:site_name" content="哈哈怪-博客">
+<meta property="og:description" content="搭建个人博客 hexo+kaze+gitalk。 我们经常会看到github有人有&lt;username&gt;.github.io形式的个人博客网页，他们是怎么做到的呢？ 仔细观察，不少人的博客底部还会出现 “powered by hexo” 或者 “由hexo强力驱动” 的字样 通过下文，你也可以搭建一个自己的github pages博客 1.Github Pages没错，浏览器中url为&amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fuheihei.github.io/tools/how-to-build-my-blog/comments.png">
+<meta property="og:image" content="http://fuheihei.github.io/tools/how-to-build-my-blog/gitlog-commit.png">
+<meta property="article:published_time" content="2022-04-15T04:23:15.000Z">
+<meta property="article:modified_time" content="2022-06-06T13:45:17.956Z">
+<meta property="article:author" content="Haha monster">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://fuheihei.github.io/tools/how-to-build-my-blog/comments.png">
   
   
   
+  <title>个人博客搭建 - 哈哈怪-博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
   
-  <script>
-    // control reverse button
-    var reverseDarkList = {
-      dark: 'light',
-      light: 'dark'
-    };
-    var themeColor = {
-      dark: '#1c1c1e',
-      light: '#fff'
-    }
-    // get the data of css prefers-color-scheme
-    var getCssMediaQuery = function() {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    };
-    // reverse current darkmode setting function
-    var reverseDarkModeSetting = function() {
-      var setting = localStorage.getItem('user-color-scheme');
-      if(reverseDarkList[setting]) {
-        setting = reverseDarkList[setting];
-      } else if(setting === null) {
-        setting = reverseDarkList[getCssMediaQuery()];
-      } else {
-        return;
-      }
-      localStorage.setItem('user-color-scheme', setting);
-      return setting;
-    };
-    // apply current darkmode setting
-    var setDarkmode = function(mode) {
-      var setting = mode || localStorage.getItem('user-color-scheme');
-      if(setting === getCssMediaQuery()) {
-        document.documentElement.removeAttribute('data-user-color-scheme');
-        localStorage.removeItem('user-color-scheme');
-        document.getElementById('theme-color').content = themeColor[setting];
-      } else if(reverseDarkList[setting]) {
-        document.documentElement.setAttribute('data-user-color-scheme', setting);
-        document.getElementById('theme-color').content = themeColor[setting];
-      } else {
-        document.documentElement.removeAttribute('data-user-color-scheme');
-        localStorage.removeItem('user-color-scheme');
-        document.getElementById('theme-color').content = themeColor[getCssMediaQuery()];
-      }
-    };
-    setDarkmode();
-  </script>
-  <script>
-    function loadScript(url, cb) {
-      var script = document.createElement('script');
-      script.src = url;
-      if (cb) script.onload = cb;
-      script.async = true;
-      document.body.appendChild(script);
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"fuheihei.github.io","root":"/","version":"1.9.1","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
     }
   </script>
-  
-  <link rel="preload" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css" as="style" >
-  <link rel="preload" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css" as="style" >
-  
-  <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.js" as="script">
-  <link rel="preload" href="/js/lib/lightbox/baguetteBox.min.css" as="style" >
-  
-  
-  <link rel="preload" href="/js/lib/lozad.min.js" as="script">
-  
-  
-  
-  
-  
-  
-  <link rel="prefetch" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" as="script">
-  
-  
-  
-  
-<link rel="stylesheet" href="/css/main.css">
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
 
-  
-  
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1946621_i1kgafibvw.css">
-
-  
-  
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1952792_89b4ac4k4up.css">
-
-  
-  
-<link rel="stylesheet" href="/js/lib/lightbox/baguetteBox.min.css">
-
-  
-  
-  
-  
-  
-  
-  <link href="/js/lib/prism/prism.min.css" rel="stylesheet" data-prism="prism">
-  
-  
-  
-<link rel="stylesheet" href="/js/lib/prism/prism-line-numbers.min.css">
-
-  
-  
   
 <meta name="generator" content="Hexo 6.1.0"></head>
 
 
 <body>
-  <div class="wrapper">
+  
+
+  <header>
     
-    <nav class="navbar">
-  <div class="navbar-logo">
-    <span class="navbar-logo-main">
-      
-      <img class="navbar-logo-img" src="/images/lightning.png" alt="logo">
-      
-      <span class="navbar-logo-dsc">哈哈怪-博客</span>
-    </span>
-  </div>
-  <div class="navbar-menu">
-    
-    <a href="/" class="navbar-menu-item">
-    
-    首页
-    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>哈哈怪</strong>
     </a>
-    
-    <a href="/archives" class="navbar-menu-item">
-    
-    归档
-    
-    </a>
-    
-    <a href="/tags" class="navbar-menu-item">
-    
-    标签
-    
-    </a>
-    
-    <a href="/categories" class="navbar-menu-item">
-    
-    分类
-    
-    </a>
-    
-    <a href="/about/index_cn" class="navbar-menu-item">
-    
-    关于我
-    
-    </a>
-    
-    <a class="navbar-menu-item darknavbar" id="dark"><i class="iconfont icon-weather"></i></a>
-    <a class="navbar-menu-item searchnavbar" id="search"><i class="iconfont icon-search" style="font-size: 1.2rem; font-weight: 400;"></i></a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                
+                关于
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/about/">
+                    <i class="iconfont icon-user-fill"></i>
+                    about me
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/fuheihei">
+                    <i class="iconfont icon-github-fill"></i>
+                    GitHub
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
   </div>
 </nav>
-    
-    <div id="local-search" style="display: none;">
-      <input class="navbar-menu-item" id="search-input" placeholder="请输入搜索内容...">
-      <div id="search-content"></div>
-    </div>
-    
-    <div class="section-wrap">
-      <div class="container">
-        <div class="columns">
-          <main class="main-column">
-<article class="card card-content">
-  <header>
-    <h1 class="post-title">
-      个人博客搭建
-    </h1>
-  </header>
-  <div class="post-meta post-show-meta">
-    <time datetime="2022-04-15T04:23:15.000Z">
-      <i class="iconfont icon-calendar" style="margin-right: 2px;"></i>
-      <span>2022-04-15</span>
-    </time>
-    
-    <span class="dot"></span>
-    
-    <a href="/categories/tools/" class="post-meta-link">tools</a>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="个人博客搭建"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
     
     
-    
-    <span class="dot"></span>
-    <span>1.2k 字</span>
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-04-15 12:23" pubdate>
+          2022年4月15日 中午
+        </time>
+      </span>
     
   </div>
-  
-  <div class="post-meta post-show-meta" style="margin-top: -10px;">
-    <div style="display: flex; align-items: center;">
-      <i class="iconfont icon-biaoqian" style="margin-right: 2px; font-size: 1.15rem;"></i>
-      
-      
-        <a href="/tags/blog/" class="post-meta-link">blog</a>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
       
     </div>
   </div>
-  
+</div>
+
+</div>
+
   </header>
-  <div id="section" class="post-content">
-    <p>搭建个人博客 hexo+kaze+gitalk。</p>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">个人博客搭建</h1>
+            
+            <div class="markdown-body">
+              
+              <p>搭建个人博客 hexo+kaze+gitalk。</p>
 <p>我们经常会看到github有人有<code>&lt;username&gt;.github.io</code>形式的个人博客网页，他们是怎么做到的呢？</p>
 <p>仔细观察，不少人的博客底部还会出现 “powered by hexo” 或者 “由hexo强力驱动” 的字样</p>
 <p>通过下文，你也可以搭建一个自己的github pages博客</p>
@@ -241,54 +301,41 @@
 <h2 id="2-hexo项目构建"><a href="#2-hexo项目构建" class="headerlink" title="2. hexo项目构建"></a>2. hexo项目构建</h2><h3 id="2-1用-hexo初始化项目"><a href="#2-1用-hexo初始化项目" class="headerlink" title="2.1用 hexo初始化项目"></a>2.1用 hexo初始化项目</h3><p>第一步，安装hexo</p>
 <p>通过hexo-cli的方式，构建博客项目会更容易。</p>
 <p>环境：需要git，node环境(&gt;&#x3D;12.0.0, 推荐nvm安装node)</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token function">npm</span> <span class="token function">install</span> hexo-cli -g<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm install hexo-cli -g<br></code></pre></td></tr></table></figure>
 
 
 
 <p>详细安装配置可以看<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">hexo官网文档 </a><br>(简便安装上面一行指令就够了)</p>
 <p>第二步，接着hexo在本地构建项目</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">hexo init <span class="token operator">&lt;</span>project_url<span class="token operator">></span> <span class="token comment">#初始化项目</span>
-<span class="token builtin class-name">cd</span> <span class="token operator">&lt;</span>project_url<span class="token operator">></span> <span class="token comment">#进入项目路径</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo init &lt;project_url&gt; <span class="hljs-comment">#初始化项目</span><br><span class="hljs-built_in">cd</span> &lt;project_url&gt; <span class="hljs-comment">#进入项目路径</span><br></code></pre></td></tr></table></figure>
 
 
 
 <p>常用的hexo指令</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">hexo g <span class="token comment">#即 hexo generate，生成静态文件</span>
-hexo s <span class="token comment">#即 hexo server，本地运行服务器</span>
-hexo d <span class="token comment">#即 hexo deploy，部署服务器，常用指令 hexo clean &amp;&amp; hexo d</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo g <span class="hljs-comment">#即 hexo generate，生成静态文件</span><br>hexo s <span class="hljs-comment">#即 hexo server，本地运行服务器</span><br>hexo d <span class="hljs-comment">#即 hexo deploy，部署服务器，常用指令 hexo clean &amp;&amp; hexo d</span><br></code></pre></td></tr></table></figure>
 
 
 
 <h3 id="2-2-新建github-pages-仓库"><a href="#2-2-新建github-pages-仓库" class="headerlink" title="2.2 新建github pages 仓库"></a>2.2 新建github pages 仓库</h3><p>新建一个github项目，项目名为&#96;&#96;{username}<code>.github.io</code>，项目是public的而非private的。</p>
 <p>修改本地hexo项目根目录下的 _config.yml文件，添加 deploy 相关的属性。</p>
 <p>需要指定发布项目的repo，这里因为我们用的是github pages，github pages通常是<code> &#123;username&#125;</code>.github.io&#96;形式的public仓库。</p>
-<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token comment"># Deployment</span>
-<span class="token comment">## Docs: https://hexo.io/docs/one-command-deployment</span>
-<span class="token key atrule">deploy</span><span class="token punctuation">:</span>
-  <span class="token key atrule">type</span><span class="token punctuation">:</span> git
-  <span class="token key atrule">repo</span><span class="token punctuation">:</span> git@github.com<span class="token punctuation">:</span>fuheihei/fuheihei.github.io.git <span class="token comment"># 指定为你的github pages的git地址</span>
-  <span class="token key atrule">branch</span><span class="token punctuation">:</span> main <span class="token comment">#对应的git分支</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># Deployment</span><br><span class="hljs-comment">## Docs: https://hexo.io/docs/one-command-deployment</span><br><span class="hljs-attr">deploy:</span><br>  <span class="hljs-attr">type:</span> <span class="hljs-string">git</span><br>  <span class="hljs-attr">repo:</span> <span class="hljs-string">git@github.com:fuheihei/fuheihei.github.io.git</span> <span class="hljs-comment"># 指定为你的github pages的git地址</span><br>  <span class="hljs-attr">branch:</span> <span class="hljs-string">main</span> <span class="hljs-comment">#对应的git分支</span><br></code></pre></td></tr></table></figure>
 
 <h2 id="3-博客主题的选取"><a href="#3-博客主题的选取" class="headerlink" title="3.博客主题的选取"></a>3.博客主题的选取</h2><p>hexo构建的博客项目可以选取很多开源的hexo主题，类似于qq空间的皮肤，我们通过修改根目录下<code>_config.yml</code>中的属性<code>theme: </code>就能指定对应的皮肤。</p>
 <p>例如</p>
 <p>想要选择的主题是<a target="_blank" rel="noopener" href="https://github.com/Ben02/hexo-theme-Anatole">anatole</a></p>
 <p>将主题项目 <code>git clone</code> 到项目中的themes文件夹下，修改项目根目录下的<code>_config.yml</code>中的属性</p>
-<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">theme: anatole  <span class="token comment">#将theme指定为anatole</span>
-<span class="token comment"># Extensions</span>
-<span class="token comment">## Plugins: https://hexo.io/plugins/</span>
-<span class="token comment">## Themes: https://hexo.io/themes/</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">theme: anatole  <span class="hljs-comment">#将theme指定为anatole</span><br><span class="hljs-comment"># Extensions</span><br><span class="hljs-comment">## Plugins: https://hexo.io/plugins/</span><br><span class="hljs-comment">## Themes: https://hexo.io/themes/</span><br></code></pre></td></tr></table></figure>
 
 <p>需要注意的是，如果指定为anatole，那么项目必须得有theme&#x2F;anatole文件夹。</p>
 <p>其他丰富的hexo主题请查阅: <a target="_blank" rel="noopener" href="https://hexo.io/themes/">https://hexo.io/themes/</a></p>
-<h2 id="4-写文章"><a href="#4-写文章" class="headerlink" title="4.写文章"></a>4.写文章</h2><h3 id="4-1-新建文章"><a href="#4-1-新建文章" class="headerlink" title="4.1 新建文章"></a>4.1 新建文章</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">hexo new <span class="token punctuation">[</span>layout<span class="token punctuation">]</span> <span class="token operator">&lt;</span>title文章名<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="4-写文章"><a href="#4-写文章" class="headerlink" title="4.写文章"></a>4.写文章</h2><h3 id="4-1-新建文章"><a href="#4-1-新建文章" class="headerlink" title="4.1 新建文章"></a>4.1 新建文章</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo new [layout] &lt;title文章名&gt;<br></code></pre></td></tr></table></figure>
 <p>例如 <code>hexo new post how-to-build-my-blog</code></p>
 <p><code>[layout]</code>可以是 post、page 和 draft，其位置和source&#x2F;_post，source&#x2F;page，source&#x2F;_draft是相关联的。</p>
-<h3 id="4-2-发布文章"><a href="#4-2-发布文章" class="headerlink" title="4.2 发布文章"></a>4.2 发布文章</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">hexo g <span class="token comment">#即 hexo generate，生成静态文件</span>
-hexo s <span class="token comment">#即 hexo server，本地运行服务器</span>
-hexo d <span class="token comment">#即 hexo deploy，部署服务器，也可以用指令 hexo clean &amp;&amp; hexo d</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-2-发布文章"><a href="#4-2-发布文章" class="headerlink" title="4.2 发布文章"></a>4.2 发布文章</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo g <span class="hljs-comment">#即 hexo generate，生成静态文件</span><br>hexo s <span class="hljs-comment">#即 hexo server，本地运行服务器</span><br>hexo d <span class="hljs-comment">#即 hexo deploy，部署服务器，也可以用指令 hexo clean &amp;&amp; hexo d</span><br></code></pre></td></tr></table></figure>
 <p>hexo d可以将本地的hexo 项目转换成github pages需要的项目发布在你的github repo中，在浏览器输入 <code>&lt;username&gt;.github.io</code> 就能看到和本地一样的hexo博客了。</p>
 <h2 id="5-评论系统"><a href="#5-评论系统" class="headerlink" title="5.评论系统"></a>5.评论系统</h2><p>完善的博客还应该提供访问用户讨论的机会。</p>
-<img src="comments.png" alt="gitalk的demo图" width="80%" height="80%" srcset="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20300%20300'%3E%3C/svg%3E" data-src="comments.png" class="lozad post-image">
+<img src="comments.png" srcset="/img/loading.gif" lazyload alt="gitalk的demo图" width="80%" height="80%">
 <p></p>
 <p style="text-align:center">gitalk的demo图</p>
 
@@ -298,17 +345,7 @@ hexo d <span class="token comment">#即 hexo deploy，部署服务器，也可�
 <p><code>Authorization callback URL</code> 和 <code>Homepage URL</code> 属性都写<code>&lt;username&gt;</code>.github.io博客的地址。</p>
 <p>并点击按钮，生成 clientSecret，下面会用到。</p>
 <h3 id="2-填写gitalk的属性"><a href="#2-填写gitalk的属性" class="headerlink" title="(2)填写gitalk的属性"></a>(2)填写gitalk的属性</h3><p>修改项目中的<code>_config.yml</code>文件，我的在<code>theme/hexo-theme-Kaze/_config.yml</code>中。修改对应gitalk配置的部分。</p>
-<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">gitalk</span><span class="token punctuation">:</span>
-  <span class="token key atrule">clientID</span><span class="token punctuation">:</span> &lt;clientID<span class="token punctuation">></span>
-  <span class="token key atrule">clientSecret</span><span class="token punctuation">:</span> &lt;clientSecret<span class="token punctuation">></span>
-  <span class="token key atrule">repo</span><span class="token punctuation">:</span> fuheihei.github.io
-  <span class="token key atrule">owner</span><span class="token punctuation">:</span> fuheihei
-  <span class="token key atrule">admin</span><span class="token punctuation">:</span> fuheihei
-  <span class="token key atrule">id</span><span class="token punctuation">:</span> location.href <span class="token comment"># dont modify</span>
-  <span class="token key atrule">distractionFreeMode</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
-  <span class="token key atrule">language</span><span class="token punctuation">:</span> navigator.language <span class="token punctuation">|</span><span class="token punctuation">|</span> navigator.userLanguage
-  <span class="token key atrule">labels</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'Gitalk'</span><span class="token punctuation">]</span>
-  <span class="token key atrule">perPage</span><span class="token punctuation">:</span> <span class="token number">10</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">gitalk:</span><br>  <span class="hljs-attr">clientID:</span> <span class="hljs-string">&lt;clientID&gt;</span><br>  <span class="hljs-attr">clientSecret:</span> <span class="hljs-string">&lt;clientSecret&gt;</span><br>  <span class="hljs-attr">repo:</span> <span class="hljs-string">fuheihei.github.io</span><br>  <span class="hljs-attr">owner:</span> <span class="hljs-string">fuheihei</span><br>  <span class="hljs-attr">admin:</span> <span class="hljs-string">fuheihei</span><br>  <span class="hljs-attr">id:</span> <span class="hljs-string">location.href</span> <span class="hljs-comment"># dont modify</span><br>  <span class="hljs-attr">distractionFreeMode:</span> <span class="hljs-literal">false</span><br>  <span class="hljs-attr">language:</span> <span class="hljs-string">navigator.language</span> <span class="hljs-string">||</span> <span class="hljs-string">navigator.userLanguage</span><br>  <span class="hljs-attr">labels:</span> [<span class="hljs-string">&#x27;Gitalk&#x27;</span>]<br>  <span class="hljs-attr">perPage:</span> <span class="hljs-number">10</span><br></code></pre></td></tr></table></figure>
 
 <h2 id="6-发布博客"><a href="#6-发布博客" class="headerlink" title="6.发布博客"></a>6.发布博客</h2><p>本地测试查看无误后，使用命令<code>hexo clean &amp;&amp; hexo deploy</code>可以上传change提交到<code>&#123;username&#125;</code>.github.io项目中。</p>
 <p>提交结果如下图所示</p>
@@ -319,331 +356,423 @@ hexo d <span class="token comment">#即 hexo deploy，部署服务器，也可�
 <p>可以看到<code>hexo deploy</code>指令会自动生成git的提交到repo上，通常是以时间作为commit的message。</p>
 <h2 id="7-总结"><a href="#7-总结" class="headerlink" title="7. 总结"></a>7. 总结</h2><p>经过上述的步骤，相信你也会有一个较好的博客了，接下来开始享受写作吧！</p>
 
-  </div>
-  <div>
-  
-  <div class="post-note note-warning copyright" style="margin-top: 42px">
-    <p><span style="font-weight: bold;">作者：</span><a target="_blank" rel="nofollow noopener noreferrer" href="http://fuheihei.github.io/about">Happy Monster</a></p>
-    <p><span style="font-weight: bold;">文章链接：</span><a target="_blank" rel="nofollow noopener noreferrer" href="http://fuheihei.github.io/tools/how-to-build-my-blog/">http://fuheihei.github.io/tools/how-to-build-my-blog/</a></p>
-    <p><span style="font-weight: bold;">版权声明：</span>原创博客，转载请注明出处</p>
-  </div>
-  
-  </div>
-</article>
-<div class="nav">
-  
-  <div class="nav-item-prev">
-    <a href="/tools/how-to-write-blog/" class="nav-link">
-      <i class="iconfont icon-left nav-prev-icon"></i>
-      <div>
-        <div class="nav-label">上一篇</div>
-        
-        <div class="nav-title">如何写博客 </div>
-        
-      </div>
-    </a>
-  </div>
-  
-  
-</div>
-
-<div class="card card-content comment-card" style="margin-top: 16px;">
-  <div class="comment-card-title">评论</div>
-  
-  <div id="gitalk-container"></div>
-  
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-
-  
-<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
-
-  
-<script src="/js/lib/md5.min.js"></script>
-
-  <script>
-    var gitalk = new Gitalk({
-      clientID: '184b8742c46374f5db54',
-      clientSecret: '6595a5cdd7ed8d21409d80b9bfbf5cd2a2c494d7',
-      repo: 'fuheihei.github.io',
-      owner: 'fuheihei',
-      admin: "fuheihei",
-      id: md5(location.href),
-      distractionFreeMode: false,
-      language: 'navigator.language || navigator.userLanguage',
-      labels: ["Gitalk"],
-      perPage: 10
-    })
-
-    gitalk.render('gitalk-container')
-  </script>
-
-</div>
-
-<div class="card card-content toc-card" id="mobiletoc">
-  <div class="toc-header"><i class="iconfont icon-menu" style="padding-right: 2px;"></i>目录</div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Github-Pages"><span class="toc-text">1.Github Pages</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-hexo%E9%A1%B9%E7%9B%AE%E6%9E%84%E5%BB%BA"><span class="toc-text">2. hexo项目构建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1%E7%94%A8-hexo%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE"><span class="toc-text">2.1用 hexo初始化项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%96%B0%E5%BB%BAgithub-pages-%E4%BB%93%E5%BA%93"><span class="toc-text">2.2 新建github pages 仓库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%8D%9A%E5%AE%A2%E4%B8%BB%E9%A2%98%E7%9A%84%E9%80%89%E5%8F%96"><span class="toc-text">3.博客主题的选取</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%86%99%E6%96%87%E7%AB%A0"><span class="toc-text">4.写文章</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E6%96%B0%E5%BB%BA%E6%96%87%E7%AB%A0"><span class="toc-text">4.1 新建文章</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%8F%91%E5%B8%83%E6%96%87%E7%AB%A0"><span class="toc-text">4.2 发布文章</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F"><span class="toc-text">5.评论系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%94%B3%E8%AF%B7OAuth-Apps"><span class="toc-text">(1)申请OAuth Apps</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%A1%AB%E5%86%99gitalk%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-text">(2)填写gitalk的属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2"><span class="toc-text">6.发布博客</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%80%BB%E7%BB%93"><span class="toc-text">7. 总结</span></a></li></ol>
-</div></main>
-          <aside class="left-column">
-            
-            <div class="card card-author">
               
-<img src="/images/barebears_icebear.jpeg" class="author-img">
-
-<p class="author-name">Happy Monster</p>
-<p class="author-description">研发工程狮</p>
-<div class="author-message">
-  <a class="author-posts-count" href="/archives">
-    <span>7</span>
-    <span>文章</span>
-  </a>
-  <a class="author-categories-count" href="/categories">
-    <span>3</span>
-    <span>分类</span>
-  </a>
-  <a class="author-tags-count" href="/tags">
-    <span>3</span>
-    <span>标签</span>
-  </a>
-</div>
-
-<div class="author-card-society">
-  
-    <div class="author-card-society-icon">
-      <a target="_blank" rel="noopener" href="https://github.com/fuheihei">
-        <i class="iconfont icon-github society-icon"></i>
-      </a>
-    </div>
-  
-    <div class="author-card-society-icon">
-      <a href="mailto:fuhaixu@foxmail.com">
-        <i class="iconfont icon-mail society-icon"></i>
-      </a>
-    </div>
-  
-</div>
-
             </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/tools/" class="category-chain-item">tools</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/blog/">#blog</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>个人博客搭建</div>
+      <div>http://fuheihei.github.io/tools/how-to-build-my-blog/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Haha monster</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年4月15日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
             
-            <div class="sticky-tablet">
-  
-  
-  <article class="display-when-two-columns spacer">
-    <div class="card card-content toc-card">
-      <div class="toc-header"><i class="iconfont icon-menu" style="padding-right: 2px;"></i>目录</div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Github-Pages"><span class="toc-text">1.Github Pages</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-hexo%E9%A1%B9%E7%9B%AE%E6%9E%84%E5%BB%BA"><span class="toc-text">2. hexo项目构建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1%E7%94%A8-hexo%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE"><span class="toc-text">2.1用 hexo初始化项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%96%B0%E5%BB%BAgithub-pages-%E4%BB%93%E5%BA%93"><span class="toc-text">2.2 新建github pages 仓库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%8D%9A%E5%AE%A2%E4%B8%BB%E9%A2%98%E7%9A%84%E9%80%89%E5%8F%96"><span class="toc-text">3.博客主题的选取</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%86%99%E6%96%87%E7%AB%A0"><span class="toc-text">4.写文章</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E6%96%B0%E5%BB%BA%E6%96%87%E7%AB%A0"><span class="toc-text">4.1 新建文章</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%8F%91%E5%B8%83%E6%96%87%E7%AB%A0"><span class="toc-text">4.2 发布文章</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F"><span class="toc-text">5.评论系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%94%B3%E8%AF%B7OAuth-Apps"><span class="toc-text">(1)申请OAuth Apps</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%A1%AB%E5%86%99gitalk%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-text">(2)填写gitalk的属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2"><span class="toc-text">6.发布博客</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%80%BB%E7%BB%93"><span class="toc-text">7. 总结</span></a></li></ol>
-    </div>
-  </article>
-  
-  
-  <article class="card card-content categories-widget">
-    <div class="categories-card">
-  <div class="categories-header"><i class="iconfont icon-fenlei" style="padding-right: 2px;"></i>分类</div>
-  <div class="categories-list">
-    
-      <a href="/categories/concurrency/">
-        <div class="categories-list-item">
-          concurrency
-          <span class="categories-list-item-badge">2</span>
-        </div>
-      </a>
-    
-      <a href="/categories/tools/">
-        <div class="categories-list-item">
-          tools
-          <span class="categories-list-item-badge">2</span>
-        </div>
-      </a>
-    
-      <a href="/categories/java基础/">
-        <div class="categories-list-item">
-          java基础
-          <span class="categories-list-item-badge">3</span>
-        </div>
-      </a>
-    
-  </div>
-</div>
-  </article>
-  
-  <article class="card card-content tags-widget">
-    <div class="tags-card">
-  <div class="tags-header"><i class="iconfont icon-biaoqian" style="padding-right: 2px;"></i>热门标签</div>
-  <div class="tags-list">
-    
-    <a href="/tags/java基础/" title="java基础"><div class="tags-list-item">java基础</div></a>
-    
-    <a href="/tags/blog/" title="blog"><div class="tags-list-item">blog</div></a>
-    
-    <a href="/tags/concurrency/" title="concurrency"><div class="tags-list-item">concurrency</div></a>
-    
-  </div>
-</div>
-  </article>
-  
-  
-</div>
-          </aside>
-          <aside class="right-column">
-            <div class="sticky-widescreen">
-  
-  
-  <article class="card card-content toc-card">
-    <div class="toc-header"><i class="iconfont icon-menu" style="padding-right: 2px;"></i>目录</div>
-<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Github-Pages"><span class="toc-text">1.Github Pages</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-hexo%E9%A1%B9%E7%9B%AE%E6%9E%84%E5%BB%BA"><span class="toc-text">2. hexo项目构建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1%E7%94%A8-hexo%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%B9%E7%9B%AE"><span class="toc-text">2.1用 hexo初始化项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%96%B0%E5%BB%BAgithub-pages-%E4%BB%93%E5%BA%93"><span class="toc-text">2.2 新建github pages 仓库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%8D%9A%E5%AE%A2%E4%B8%BB%E9%A2%98%E7%9A%84%E9%80%89%E5%8F%96"><span class="toc-text">3.博客主题的选取</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%86%99%E6%96%87%E7%AB%A0"><span class="toc-text">4.写文章</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E6%96%B0%E5%BB%BA%E6%96%87%E7%AB%A0"><span class="toc-text">4.1 新建文章</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%8F%91%E5%B8%83%E6%96%87%E7%AB%A0"><span class="toc-text">4.2 发布文章</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E8%AF%84%E8%AE%BA%E7%B3%BB%E7%BB%9F"><span class="toc-text">5.评论系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%94%B3%E8%AF%B7OAuth-Apps"><span class="toc-text">(1)申请OAuth Apps</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%A1%AB%E5%86%99gitalk%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-text">(2)填写gitalk的属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2"><span class="toc-text">6.发布博客</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%80%BB%E7%BB%93"><span class="toc-text">7. 总结</span></a></li></ol>
-  </article>
-  
-  
-  <article class="card card-content">
-    <div class="recent-posts-card">
-  <div class="recent-posts-header"><i class="iconfont icon-wenzhang_huaban" style="padding-right: 2px;"></i>最近文章</div>
-  <div class="recent-posts-list">
-    
-      <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-05-29</div>
-        <a href="/java/basis/string-study/"><div class="recent-posts-item-content">Java基础 - String，StringBuilder，StringBuffer</div></a>
-      </div>
-    
-      <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-05-29</div>
-        <a href="/java/basis/common/"><div class="recent-posts-item-content">Java基础 - 零碎知识点</div></a>
-      </div>
-    
-      <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-05-29</div>
-        <a href="/java/basis/base-data-type/"><div class="recent-posts-item-content">Java基础 - 基本数据类型</div></a>
-      </div>
-    
-      <div class="recent-posts-item">
-        <div class="recent-posts-item-title">2022-05-26</div>
-        <a href="/java-concurrency-programming/thread-executor/"><div class="recent-posts-item-content">并发编程 - 解析 ThreadPoolExecutor</div></a>
-      </div>
-    
-  </div>
-</div>
-  </article>
-  
-  
-</div>
-          </aside>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <footer class="footer">
-  <div class="footer-container">
-    <div>
-      <div class="footer-dsc">
-        <span>Copyright ©
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
           
-          2022 -
-          
-          2022
-        </span>
-        &nbsp;
-        <a href="/" class="footer-link">哈哈怪-博客 </a>
+        </div>
       </div>
     </div>
+    <div class="license-icon iconfont"></div>
+  </div>
 
-    
-    <div class="footer-dsc">
-      
-      Powered by
-      <a href="https://hexo.io/" class="footer-link" target="_blank" rel="nofollow noopener noreferrer">&nbsp;Hexo </a>
-      
-      
-      <span>&nbsp;|&nbsp;</span>
-      
-      
-      Theme -
-      <a href="https://github.com/theme-kaze" class="footer-link" target="_blank"
-        rel="nofollow noopener noreferrer">&nbsp;Kaze</a>
-      
-    </div>
-    
-    
-    
-    
-      <div class="footer-dsc">
-        
-        本站总访问量<span id="busuanzi_value_site_pv"></span>次
-        
-        
-        <span>&nbsp;|&nbsp;</span>
-        
-        
-        本站总访客数<span id="busuanzi_value_site_uv"></span>次
-        
-      </div>
-      
-    
-</footer>
-  <a role="button" id="scrollbutton" class="basebutton"  aria-label="回到顶部">
-  <i class="iconfont icon-arrowleft button-icon"></i>
-</a>
-<a role="button" id="menubutton" class="basebutton">
-  <i class="iconfont icon-menu button-icon"></i>
-</a>
-<a role="button" id="popbutton" class="basebutton" aria-label="控制中心">
-  <i class="iconfont icon-expand button-icon"></i>
-</a>
-<a role="button" id="darkbutton" class="basebutton darkwidget" aria-label="夜色模式">
-  <i class="iconfont icon-weather button-icon"></i>
-</a>
-<a role="button" id="searchbutton" class="basebutton searchwidget" aria-label="搜索">
-  <i class="iconfont icon-search button-icon"></i>
-</a>
 
-  
-  
-  
-  <script>
-  var addImgLayout = function () {
-    var img = document.querySelectorAll('.post-content img');
-    var i;
-    for (i = 0; i < img.length; i++) {
-      var wrapper = document.createElement('a');
-      wrapper.setAttribute('href', img[i].getAttribute('data-src'));
-      wrapper.setAttribute('aria-label', 'illustration');
-      wrapper.style.cssText = 'width: 100%; display: flex; justify-content: center;';
-      if (img[i].alt) wrapper.dataset.caption = img[i].alt;
-      wrapper.dataset.nolink = true;
-      img[i].before(wrapper);
-      wrapper.append(img[i]);
-      var divWrap = document.createElement('div');
-      divWrap.classList.add('gallery');
-      wrapper.before(divWrap);
-      divWrap.append(wrapper);
-    }
-    baguetteBox.run('.gallery');
-  }
-</script>
-<script>loadScript("/js/lib/lightbox/baguetteBox.min.js", addImgLayout)</script>
-  
-  
-  
-<script src="/js/main.js"></script>
 
-  
-  <script>loadScript("/js/lib/busuanzi.min.js")</script>
-  
-  
-  <script>
-    var addLazyload = function () {
-      var observer = lozad('.lozad', {
-        load: function (el) {
-          el.srcset = el.getAttribute('data-src');
-        },
-        loaded: function (el) {
-          el.classList.add('loaded');
-        }
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/tools/how-to-write-blog/" title="如何写博客">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">如何写博客</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.7.2/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"184b8742c46374f5db54","clientSecret":"6595a5cdd7ed8d21409d80b9bfbf5cd2a2c494d7","repo":"fuheihei.github.io","owner":"fuheihei","admin":["fuheihei"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: 'babb56cf126d69632f64fa91a7158733'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
       });
-      observer.observe();
-    }
+    });
   </script>
-  <script>loadScript("/js/lib/lozad.min.js", addLazyload)</script>
-  
-  
-</body>
+  <noscript>Please enable JavaScript to view the comments</noscript>
 
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
+
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
 </html>
