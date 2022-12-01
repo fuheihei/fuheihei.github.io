@@ -16,15 +16,15 @@
   <meta name="author" content="Haha monster">
   <meta name="keywords" content="Java,Web,Database">
   
-    <meta name="description" content="[Java Doc]reference翻译oracle doc原文：https:&#x2F;&#x2F;docs.oracle.com&#x2F;javase&#x2F;9&#x2F;docs&#x2F;api&#x2F;java&#x2F;lang&#x2F;ref&#x2F;package-summary.html#reachability Package java.lang.refsince: 1.2 Provides reference-object classes, which sup">
+    <meta name="description" content="从11.27日的周日到12.1日的周四，发生了很多事情。下面的内容我希望大家从两面性来看待，一件事往往是要从两面来分析看待的，要坚持具体问题具体分析。 国内媒体的报道较少，群众获取消息的信息甚至只能从BBC等新闻渠道获取。 整件事情，我感觉更多的还是“一刀切”的工作方式导致的； 举个例子，地铁的安检主要是防范少数人的，但是导致整个群体都需要被检查是否携带危险物品，但是由于地铁实在太快，而安检的时间">
 <meta property="og:type" content="article">
 <meta property="og:title" content="哈哈怪-博客">
-<meta property="og:url" content="http://fuheihei.github.io/java/doc-translation/java-lang-ref/">
+<meta property="og:url" content="http://fuheihei.github.io/thinking/22_12_1%E6%97%A5_%E5%A4%9A%E6%95%B0%E4%BA%BA%E6%94%BF%E6%B2%BB%E5%AD%98%E5%9C%A8%E7%9A%84%E5%BC%8A%E7%AB%AF/">
 <meta property="og:site_name" content="哈哈怪-博客">
-<meta property="og:description" content="[Java Doc]reference翻译oracle doc原文：https:&#x2F;&#x2F;docs.oracle.com&#x2F;javase&#x2F;9&#x2F;docs&#x2F;api&#x2F;java&#x2F;lang&#x2F;ref&#x2F;package-summary.html#reachability Package java.lang.refsince: 1.2 Provides reference-object classes, which sup">
+<meta property="og:description" content="从11.27日的周日到12.1日的周四，发生了很多事情。下面的内容我希望大家从两面性来看待，一件事往往是要从两面来分析看待的，要坚持具体问题具体分析。 国内媒体的报道较少，群众获取消息的信息甚至只能从BBC等新闻渠道获取。 整件事情，我感觉更多的还是“一刀切”的工作方式导致的； 举个例子，地铁的安检主要是防范少数人的，但是导致整个群体都需要被检查是否携带危险物品，但是由于地铁实在太快，而安检的时间">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-08-14T14:26:24.018Z">
-<meta property="article:modified_time" content="2022-08-16T06:42:57.910Z">
+<meta property="article:published_time" content="2022-12-01T02:52:57.423Z">
+<meta property="article:modified_time" content="2022-12-01T03:49:05.356Z">
 <meta property="article:author" content="Haha monster">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="Web">
@@ -227,8 +227,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-08-14 22:26" pubdate>
-          2022年8月14日 晚上
+        <time datetime="2022-12-01 10:52" pubdate>
+          2022年12月1日 上午
         </time>
       </span>
     
@@ -239,7 +239,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          6.3k 字
+          1.2k 字
         
       </span>
     
@@ -250,7 +250,7 @@
         
         
         
-          53 分钟
+          10 分钟
         
       </span>
     
@@ -292,108 +292,20 @@
             
             <div class="markdown-body">
               
-              <h1 id="Java-Doc-reference翻译"><a href="#Java-Doc-reference翻译" class="headerlink" title="[Java Doc]reference翻译"></a>[Java Doc]reference翻译</h1><p>oracle doc原文：<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/lang/ref/package-summary.html#reachability">https://docs.oracle.com/javase/9/docs/api/java/lang/ref/package-summary.html#reachability</a></p>
-<h1 id="Package-java-lang-ref"><a href="#Package-java-lang-ref" class="headerlink" title="Package java.lang.ref"></a>Package java.lang.ref</h1><p>since: 1.2</p>
-<p>Provides reference-object classes, which support a limited degree of interaction with the garbage collector. A program may use a reference object to maintain a reference to some other object in such a way that the latter object may still be reclaimed by the collector. A program may also arrange to be notified some time after the collector has determined that the reachability of a given object has changed.</p>
-<blockquote>
-<p>提供引用对象类，它们支持同垃圾收集器有限程度的交互。程序可以使用一个引用对象来维护对某个其他对象的引用，利用这样的方式，后一个对象仍然可以被收集器回收。程序也可以安排在收集器确定给定对象的可达性已改变之后，于某个时候得到通知。</p>
-<p>notify v 通知，唤醒</p>
-</blockquote>
-<h2 id="Package-Specification"><a href="#Package-Specification" class="headerlink" title="Package Specification"></a>Package Specification</h2><blockquote>
-<p>包描述</p>
-</blockquote>
-<p>A <em>reference object</em> encapsulates a reference to some other object so that the reference itself may be examined and manipulated like any other object. Three types of reference objects are provided, each weaker than the last: <em>soft</em>, <em>weak</em>, and <em>phantom</em>. Each type corresponds to a different level of reachability, as defined below. Soft references are for implementing memory-sensitive caches, weak references are for implementing canonicalizing mappings that do not prevent their keys (or values) from being reclaimed, and phantom references are for scheduling post-mortem cleanup actions. Post-mortem cleanup actions can be registered and managed by a <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/lang/ref/Cleaner.html"><code>Cleaner</code></a>.</p>
-<blockquote>
-<p>引用对象封装某个其他对象的引用，这使得引用对象本身可以像任何其他对象一样被检查和操作。提供三种引用对象，由从强到弱的顺序是：软引用(soft)，弱引用(*weak)*，虚引用( <em>phantom</em>)。每种类型都对应一个不同的可达度(GC中的可达度)，定义如下。软引用用于实现对内存敏感的缓存，弱引用用于实现不阻止键(或值)被回收的规范化映射，虚引用用于调度事后清理的操作。事后清理行为可以由<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/lang/ref/Cleaner.html">Cleaner</a>对象注册和管理。</p>
-<p>encapsulate v 简述，概括，压缩</p>
-<p>canonicalizing v 规范化</p>
-<p>examine 检查</p>
-</blockquote>
-<p>Each reference-object type is implemented by a subclass of the abstract base <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/lang/ref/Reference.html"><code>Reference</code></a> class. An instance of one of these subclasses encapsulates a single reference to a particular object, called the <em>referent</em>. Every reference object provides methods for getting and clearing the reference. Aside from the clearing operation reference objects are otherwise immutable, so no <code>set</code> operation is provided. A program may further subclass these subclasses, adding whatever fields and methods are required for its purposes, or it may use these subclasses without change.</p>
-<blockquote>
-<p>每个引用对象都由抽象基类 Reference的子类实现。一个这些子类的实例封装了一个对于特定对象的单个引用，这个特定对象被叫做所指对象( <em>referent ,指称</em>)。每种引用对象都提供了获取和清理引用的方法。除了清理操作以外，引用对象是不可变的，所以不提供设置操作。程序可以扩展这些子类出新的子类，出于程序的目的来添加任何字段域(field)和方法(method)，或者不加任何改变来使用这些子类。</p>
-<p>otherwise adv 否则，不然，反之</p>
-<p>immutable adj 不可变</p>
-</blockquote>
-<h3 id="Notification"><a href="#Notification" class="headerlink" title="Notification"></a>Notification</h3><blockquote>
-<p>通知，公示</p>
-</blockquote>
-<p>A program may request to be notified of changes in an object’s reachability by <em>registering</em> an appropriate reference object with a <em>reference queue</em> at the time the reference object is created. Some time after the garbage collector determines that the reachability of the referent has changed to the value corresponding to the type of the reference, it will clear the reference and add it to the associated queue. At this point, the reference is considered to be <em>enqueued</em>. The program may remove references from a queue either by polling or by blocking until a reference becomes available. Reference queues are implemented by the <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/lang/ref/ReferenceQueue.html"><code>ReferenceQueue</code></a> class.</p>
-<blockquote>
-<p>程序可以通过在创建引用对象时，用引用队列注册一个合适的引用对象的方式，来请求通知对象的可达性的变化。在垃圾收集器决定所指对象 (referent) 的可达性变更到相应类型的值后的一段时间，垃圾收集器会清除引用并添加它到关联的队列中。此时，该引用被认为已入队了。程序通过轮询 (poll) 和阻塞 (blocking) 的方式，从队列中删除引用 (reference) ，直到引用 (reference) 变得的再次可达。引用队列由 ReferenceQueue 类实现。</p>
-<p>appropriate adj 合适的，恰当的</p>
-<p>corresponding to 相关的，对应的</p>
-<p>associated 关联的</p>
-<p>either .. or … 两者任一</p>
-</blockquote>
-<p>The relationship between a registered reference object and its queue is one-sided. That is, a queue does not keep track of the references that are registered with it. If a registered reference becomes unreachable itself, then it will never be enqueued. It is the responsibility of the program using reference objects to ensure that the objects remain reachable for as long as the program is interested in their referents.</p>
-<blockquote>
-<p>注册的引用对象和它的队列的关系是片面的。这是因为，队列并不跟踪其注册的引用们(references)。如果一个注册的引用自身变得不可达，之后它将永远不会入队。只要程序还关联引用所指对象(referent)，程序有责任，使用引用来确保对象的可访问性。</p>
-<p>one-sided 片面的</p>
-</blockquote>
-<p>While some programs will choose to <strong>dedicate</strong> a thread to removing reference objects from one or more queues and processing them, this is by no means necessary. A <strong>tactic</strong> that often works well is to <strong>examine</strong> a reference queue in the course of performing some other <strong>fairly</strong>-frequent action. For example, a hashtable that uses weak references to implement weak keys could poll its reference queue each time the table is accessed. This is how the <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/util/WeakHashMap.html"><code>WeakHashMap</code></a> class works. Because the <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/lang/ref/ReferenceQueue.html#poll--"><code>ReferenceQueue.poll</code></a> method simply checks an internal data structure, this check will add little overhead to the hashtable access methods.</p>
-<blockquote>
-<p>虽然一些程序会选择牺牲一个线程从一个或更多的队列删除引用对象和处理它们，但这绝不是必要的。一个通常工作很好的策略，是进行某种相当频繁的操作的时候，检查引用队列。例如，hashtable使用弱引用来实现弱键，当每次访问table的时候，可以轮询它的引用队列。这也是WeakHashMap类的工作原理。因为ReferenceQueue.poll 方法只是检查内部的数据结构，这项检查不会为hashtable访问方法添加额外的开销。</p>
-<p>dedicate 奉献. dedicate&#x2F;devote&#x2F;consecrate sth to doing</p>
-<p>by no means 绝不 this is by no means necessary</p>
-<p>tactic n 策略</p>
-<p>in the course of</p>
-<p>fairly adv quite, considerably 相当地</p>
-</blockquote>
-<h3 id="Automatically-cleared-references"><a href="#Automatically-cleared-references" class="headerlink" title="Automatically-cleared references"></a>Automatically-cleared references</h3><blockquote>
-<p>自动清理的引用们</p>
-</blockquote>
-<p>Soft and weak references are automatically cleared by the collector before being added to the queues with which they are registered, if any. Therefore soft and weak references need not be registered with a queue in order to be useful, while phantom references do. An object that is reachable via phantom references will remain so until all such references are cleared or themselves become unreachable.</p>
-<p>软引用和弱引用在被添加到它们注册的队列中之前，会被垃圾收集器自动清理(如果有的话)。因此为了有效，软引用和弱引用不需要被注册到一个对列中，而虚引用需要添加到队列中。一个可以通过虚引用可达的对象将保持不变，直到所有引用被清除，或者对象自身变得不可达。</p>
-<h3 id="Reachability"><a href="#Reachability" class="headerlink" title="Reachability"></a>Reachability</h3><blockquote>
-<p>可达性</p>
-</blockquote>
-<p>Going from strongest to weakest, the different levels of reachability reflect the life cycle of an object. They are operationally defined as follows:</p>
-<blockquote>
-<p>从最强到最弱，不同可达性的等级反映了一个对象的生命周期。他们操作上被定义为下列：</p>
-<p>operationally adj 操作上</p>
-</blockquote>
-<ul>
-<li>An object is <em>strongly reachable</em> if it can be reached by some thread without traversing any reference objects. A newly-created object is strongly reachable by the thread that created it.</li>
-<li>An object is <em>softly reachable</em> if it is not strongly reachable but can be reached by traversing a soft reference.</li>
-<li>An object is <em>weakly reachable</em> if it is neither strongly nor softly reachable but can be reached by traversing a weak reference. When the weak references to a weakly-reachable object are cleared, the object becomes eligible for finalization.</li>
-<li>An object is <em>phantom reachable</em> if it is neither strongly, softly, nor weakly reachable, it has been finalized, and some phantom reference refers to it.</li>
-<li>Finally, an object is <em>unreachable</em>, and therefore eligible for reclamation, when it is not reachable in any of the above ways.</li>
-</ul>
-<blockquote>
-<ul>
-<li><p>(Strong)如果对象可以被某个线程不用通过任何引用对象访问，这个对象是强可达的。一个新建的对象对于创建它的线程来讲是强可达的。</p>
-</li>
-<li><p>(Soft)如果对象不是强可达，但是可以通过软引用(SoftReference)访问到，它是软可达的。</p>
-</li>
-<li><p>(Weak)如果对象既不是强可达，也不是软可达，但可以通过弱引用(WeakReference)访问到，它是弱可达的。当指向弱引用的弱引用被清除，对象就具备了结束(finalization)的条件。</p>
-</li>
-<li><p>(phantom) 如果对象既不是强可达，软可达，也不是弱可达，对象是虚可达(PhantomReference)。它已经被结束了(finalize)，并且某个虚引用指向它。</p>
-</li>
-<li><p>最终，当对象无法通过上述任何一种方式到达时，对象是不可达状态(unreachable)，因此具备了进行回收的资格。</p>
-</li>
-</ul>
-<p>reclamation n 回收</p>
-</blockquote>
-<h3 id="Interface-Summary"><a href="#Interface-Summary" class="headerlink" title="Interface Summary"></a>Interface Summary</h3><blockquote>
-<p>接口摘要</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>Interface</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Cleaner.Cleanable</td>
-<td><code>Cleanable</code> represents an object and a cleaning action registered in a <code>Cleaner</code>.</td>
-</tr>
-<tr>
-<td></td>
-<td><code>Cleanable</code> 表示在 <code>Cleaner</code>上注册的对象和清理工作。注：Cleanable接口只有一个clean()方法。</td>
-</tr>
-</tbody></table>
+              <p>从11.27日的周日到12.1日的周四，发生了很多事情。下面的内容我希望大家从两面性来看待，一件事往往是要从两面来分析看待的，要坚持具体问题具体分析。</p>
+<p>国内媒体的报道较少，群众获取消息的信息甚至只能从BBC等新闻渠道获取。</p>
+<p>整件事情，我感觉更多的还是“一刀切”的工作方式导致的；</p>
+<p>举个例子，地铁的安检主要是防范少数人的，但是导致整个群体都需要被检查是否携带危险物品，但是由于地铁实在太快，而安检的时间在人流量稳定时太短，群体中的每个人能够牺牲一点点的安检时间来换取更便捷快速的交通。这本身是个一刀切的过程，即让所有人为少数危险分子买单。在这个过程中，个人需要满足地铁安检+地铁通行时间&lt;&lt; 自身不用地铁交通时间，才是赚的。但一旦地铁安检时间过长，地铁通行时间过长，不满足了这个式子，亏了的心理就会出现。</p>
+<p>而在疫情防控中，大部分学生，老师和地方上本就流动性不强的工作者却需要牺牲自我的活动空间来封控，牺牲自我的时间去避免疫情的扩大化。（1）核酸检测公司的上市，（2）核酸结果不正确，（3）不管怎么封控，境外输入还是存在，病例并未见的缓和，这三件事更加剧了人们心中的不安感。</p>
+<p>而与此同时，12.10日即将出现的“一刀切”的互联网言论自由也将呈现在桌子上，更导致群众的不满。使得所有人需要为少数危险分子，极端分子买单。甚至可能以后不能谈论政治，不能发出一点谴责的声音。</p>
+<p>保证“所有人的言论自由”为什么如此重要？言论不自由的前提得是政府是稳定运行下去的，控制言论的手段和工具不能落入恶劣分子手中。要确保发展的过程中不出现腐败分子，侵犯大众的权利的人存在。不然大众一旦想发出合理的声音，很可能会被恶劣分子掐断发声渠道，无法表达合理的诉求。举个很简单的例子，小区的物业问题，想倾诉不满或者向上汇报时，如果言论不自由，那将会导致信息传递极为困难，总不能人人都想一些“通假字”来避讳，还要保证消息接收方愿意接收消息。我也赞同是应该讲少部分的危险分子言论监控，但大众的声音不应该为危险分子买单。</p>
+<p>好在经过这几天的发声，一些正向消息也在进入视眼。国人是极有勇气的，这让我想到了，“<em>中国人总是被他们</em>之中最<em>勇敢的人保护</em>得很好”。其中女性的力量甚至更胜男性。</p>
+<p>11.27日，四川硬刚“核酸造假”第三方检测机构</p>
+<p>11.28日，重庆市发布会说，核酸结果盲样考核不一致，实验室将被暂停检测资格。</p>
+<p>11.29日，浙江宣传发文，“人民至上”而不是“防疫至上”</p>
+<p>11.29日，“人民日报健康客户端”发表评论文章《核酸乱象不止，疫情永无宁日》，重点指出虚假的核酸报告会引发疫情扩散，让一轮又一轮的核酸检测持续数月，让区县甚至城市停摆，导致群众被静默，管控，影响工作生活。</p>
+<p>以上是个人对目前发生事情一些粗浅见解，特此记录下来。文章想表达的重点是不能粗暴地“一刀切”。</p>
+<p>这是我生长的地方，我希望能影响并改善它的不足。</p>
 
               
             </div>
@@ -411,7 +323,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div></div>
-      <div>http://fuheihei.github.io/java/doc-translation/java-lang-ref/</div>
+      <div>http://fuheihei.github.io/thinking/22_12_1日_多数人政治存在的弊端/</div>
     </div>
     <div class="license-meta">
       
@@ -423,7 +335,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年8月14日</div>
+          <div>2022年12月1日</div>
         </div>
       
       
@@ -453,18 +365,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/thinking/22_12_1%E6%97%A5_%E5%A4%9A%E6%95%B0%E4%BA%BA%E6%94%BF%E6%B2%BB%E5%AD%98%E5%9C%A8%E7%9A%84%E5%BC%8A%E7%AB%AF/" title="">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile"></span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/java-concurrency-programming/thread-executor/" title="并发编程 - 解析 ThreadPoolExecutor">
-                        <span class="hidden-mobile">并发编程 - 解析 ThreadPoolExecutor</span>
+                      <a href="/java/doc-translation/java-lang-ref/" title="">
+                        <span class="hidden-mobile"></span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -485,7 +391,7 @@
         var options = Object.assign(
           {"clientID":"184b8742c46374f5db54","clientSecret":"6595a5cdd7ed8d21409d80b9bfbf5cd2a2c494d7","repo":"fuheihei.github.io","owner":"fuheihei","admin":["fuheihei"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
           {
-            id: '9b32d54dd3336ad05e74e6ceafa74c08'
+            id: '36cdacffbf8f7d64fd4584104c53d8c1'
           }
         )
         var gitalk = new Gitalk(options);
