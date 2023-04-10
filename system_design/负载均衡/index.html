@@ -16,24 +16,22 @@
   <meta name="author" content="Haha monster">
   <meta name="keywords" content="Java,Web,Database">
   
-    <meta name="description" content="[Java Doc]reference翻译oracle doc原文：https:&#x2F;&#x2F;docs.oracle.com&#x2F;javase&#x2F;9&#x2F;docs&#x2F;api&#x2F;java&#x2F;lang&#x2F;ref&#x2F;package-summary.html#reachability Package java.lang.refsince: 1.2 Provides reference-object classes, which sup">
+    <meta name="description" content="负载均衡负载均衡的好处 增加扩展性(increase scalability) 负载均衡器可以根据服务器的流量峰值来调整（增加或减少）服务器资源  冗余(redudant) 可以为不可避免的硬件故障和服务器宕机提供安全保障  可维护性和高性能(maintainability and performance)   具有分布在多个位置和各种云环境的web服务器的业务可以随时安排维护，以提高性能，同时对">
 <meta property="og:type" content="article">
-<meta property="og:title" content="哈哈怪-博客">
-<meta property="og:url" content="http://fuheihei.github.io/java/doc-translation/java-lang-ref/">
+<meta property="og:title" content="负载均衡">
+<meta property="og:url" content="http://fuheihei.github.io/system_design/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">
 <meta property="og:site_name" content="哈哈怪-博客">
-<meta property="og:description" content="[Java Doc]reference翻译oracle doc原文：https:&#x2F;&#x2F;docs.oracle.com&#x2F;javase&#x2F;9&#x2F;docs&#x2F;api&#x2F;java&#x2F;lang&#x2F;ref&#x2F;package-summary.html#reachability Package java.lang.refsince: 1.2 Provides reference-object classes, which sup">
+<meta property="og:description" content="负载均衡负载均衡的好处 增加扩展性(increase scalability) 负载均衡器可以根据服务器的流量峰值来调整（增加或减少）服务器资源  冗余(redudant) 可以为不可避免的硬件故障和服务器宕机提供安全保障  可维护性和高性能(maintainability and performance)   具有分布在多个位置和各种云环境的web服务器的业务可以随时安排维护，以提高性能，同时对">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-08-14T14:26:24.018Z">
-<meta property="article:modified_time" content="2022-08-16T06:42:57.910Z">
+<meta property="article:published_time" content="2023-04-10T04:23:15.000Z">
+<meta property="article:modified_time" content="2023-04-10T07:35:13.313Z">
 <meta property="article:author" content="Haha monster">
-<meta property="article:tag" content="Java">
-<meta property="article:tag" content="Web">
-<meta property="article:tag" content="Database">
+<meta property="article:tag" content="系统设计">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>哈哈怪-博客</title>
+  <title>负载均衡 - 哈哈怪-博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -216,7 +214,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text=""></span>
+            <span id="subtitle" data-typed-text="负载均衡"></span>
           
         </div>
 
@@ -227,8 +225,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-08-14 22:26" pubdate>
-          2022年8月14日 晚上
+        <time datetime="2023-04-10 12:23" pubdate>
+          2023年4月10日 中午
         </time>
       </span>
     
@@ -239,7 +237,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          6.3k 字
+          704 字
         
       </span>
     
@@ -250,7 +248,7 @@
         
         
         
-          53 分钟
+          6 分钟
         
       </span>
     
@@ -288,112 +286,33 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none"></h1>
+            <h1 style="display: none">负载均衡</h1>
             
             <div class="markdown-body">
               
-              <h1 id="Java-Doc-reference翻译"><a href="#Java-Doc-reference翻译" class="headerlink" title="[Java Doc]reference翻译"></a>[Java Doc]reference翻译</h1><p>oracle doc原文：<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/lang/ref/package-summary.html#reachability">https://docs.oracle.com/javase/9/docs/api/java/lang/ref/package-summary.html#reachability</a></p>
-<h1 id="Package-java-lang-ref"><a href="#Package-java-lang-ref" class="headerlink" title="Package java.lang.ref"></a>Package java.lang.ref</h1><p>since: 1.2</p>
-<p>Provides reference-object classes, which support a limited degree of interaction with the garbage collector. A program may use a reference object to maintain a reference to some other object in such a way that the latter object may still be reclaimed by the collector. A program may also arrange to be notified some time after the collector has determined that the reachability of a given object has changed.</p>
-<blockquote>
-<p>提供引用对象类，它们支持同垃圾收集器有限程度的交互。程序可以使用一个引用对象来维护对某个其他对象的引用，利用这样的方式，后一个对象仍然可以被收集器回收。程序也可以安排在收集器确定给定对象的可达性已改变之后，于某个时候得到通知。</p>
-<p>notify v 通知，唤醒</p>
-</blockquote>
-<h2 id="Package-Specification"><a href="#Package-Specification" class="headerlink" title="Package Specification"></a>Package Specification</h2><blockquote>
-<p>包描述</p>
-</blockquote>
-<p>A <em>reference object</em> encapsulates a reference to some other object so that the reference itself may be examined and manipulated like any other object. Three types of reference objects are provided, each weaker than the last: <em>soft</em>, <em>weak</em>, and <em>phantom</em>. Each type corresponds to a different level of reachability, as defined below. Soft references are for implementing memory-sensitive caches, weak references are for implementing canonicalizing mappings that do not prevent their keys (or values) from being reclaimed, and phantom references are for scheduling post-mortem cleanup actions. Post-mortem cleanup actions can be registered and managed by a <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/lang/ref/Cleaner.html"><code>Cleaner</code></a>.</p>
-<blockquote>
-<p>引用对象封装某个其他对象的引用，这使得引用对象本身可以像任何其他对象一样被检查和操作。提供三种引用对象，由从强到弱的顺序是：软引用(soft)，弱引用(*weak)*，虚引用( <em>phantom</em>)。每种类型都对应一个不同的可达度(GC中的可达度)，定义如下。软引用用于实现对内存敏感的缓存，弱引用用于实现不阻止键(或值)被回收的规范化映射，虚引用用于调度事后清理的操作。事后清理行为可以由<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/lang/ref/Cleaner.html">Cleaner</a>对象注册和管理。</p>
-<p>encapsulate v 简述，概括，压缩</p>
-<p>canonicalizing v 规范化</p>
-<p>examine 检查</p>
-</blockquote>
-<p>Each reference-object type is implemented by a subclass of the abstract base <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/lang/ref/Reference.html"><code>Reference</code></a> class. An instance of one of these subclasses encapsulates a single reference to a particular object, called the <em>referent</em>. Every reference object provides methods for getting and clearing the reference. Aside from the clearing operation reference objects are otherwise immutable, so no <code>set</code> operation is provided. A program may further subclass these subclasses, adding whatever fields and methods are required for its purposes, or it may use these subclasses without change.</p>
-<blockquote>
-<p>每个引用对象都由抽象基类 Reference的子类实现。一个这些子类的实例封装了一个对于特定对象的单个引用，这个特定对象被叫做所指对象( <em>referent ,指称</em>)。每种引用对象都提供了获取和清理引用的方法。除了清理操作以外，引用对象是不可变的，所以不提供设置操作。程序可以扩展这些子类出新的子类，出于程序的目的来添加任何字段域(field)和方法(method)，或者不加任何改变来使用这些子类。</p>
-<p>otherwise adv 否则，不然，反之</p>
-<p>immutable adj 不可变</p>
-</blockquote>
-<h3 id="Notification"><a href="#Notification" class="headerlink" title="Notification"></a>Notification</h3><blockquote>
-<p>通知，公示</p>
-</blockquote>
-<p>A program may request to be notified of changes in an object’s reachability by <em>registering</em> an appropriate reference object with a <em>reference queue</em> at the time the reference object is created. Some time after the garbage collector determines that the reachability of the referent has changed to the value corresponding to the type of the reference, it will clear the reference and add it to the associated queue. At this point, the reference is considered to be <em>enqueued</em>. The program may remove references from a queue either by polling or by blocking until a reference becomes available. Reference queues are implemented by the <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/lang/ref/ReferenceQueue.html"><code>ReferenceQueue</code></a> class.</p>
-<blockquote>
-<p>程序可以通过在创建引用对象时，用引用队列注册一个合适的引用对象的方式，来请求通知对象的可达性的变化。在垃圾收集器决定所指对象 (referent) 的可达性变更到相应类型的值后的一段时间，垃圾收集器会清除引用并添加它到关联的队列中。此时，该引用被认为已入队了。程序通过轮询 (poll) 和阻塞 (blocking) 的方式，从队列中删除引用 (reference) ，直到引用 (reference) 变得的再次可达。引用队列由 ReferenceQueue 类实现。</p>
-<p>appropriate adj 合适的，恰当的</p>
-<p>corresponding to 相关的，对应的</p>
-<p>associated 关联的</p>
-<p>either .. or … 两者任一</p>
-</blockquote>
-<p>The relationship between a registered reference object and its queue is one-sided. That is, a queue does not keep track of the references that are registered with it. If a registered reference becomes unreachable itself, then it will never be enqueued. It is the responsibility of the program using reference objects to ensure that the objects remain reachable for as long as the program is interested in their referents.</p>
-<blockquote>
-<p>注册的引用对象和它的队列的关系是片面的。这是因为，队列并不跟踪其注册的引用们(references)。如果一个注册的引用自身变得不可达，之后它将永远不会入队。只要程序还关联引用所指对象(referent)，程序有责任，使用引用来确保对象的可访问性。</p>
-<p>one-sided 片面的</p>
-</blockquote>
-<p>While some programs will choose to <strong>dedicate</strong> a thread to removing reference objects from one or more queues and processing them, this is by no means necessary. A <strong>tactic</strong> that often works well is to <strong>examine</strong> a reference queue in the course of performing some other <strong>fairly</strong>-frequent action. For example, a hashtable that uses weak references to implement weak keys could poll its reference queue each time the table is accessed. This is how the <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/util/WeakHashMap.html"><code>WeakHashMap</code></a> class works. Because the <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/9/docs/api/java/lang/ref/ReferenceQueue.html#poll--"><code>ReferenceQueue.poll</code></a> method simply checks an internal data structure, this check will add little overhead to the hashtable access methods.</p>
-<blockquote>
-<p>虽然一些程序会选择牺牲一个线程从一个或更多的队列删除引用对象和处理它们，但这绝不是必要的。一个通常工作很好的策略，是进行某种相当频繁的操作的时候，检查引用队列。例如，hashtable使用弱引用来实现弱键，当每次访问table的时候，可以轮询它的引用队列。这也是WeakHashMap类的工作原理。因为ReferenceQueue.poll 方法只是检查内部的数据结构，这项检查不会为hashtable访问方法添加额外的开销。</p>
-<p>dedicate 奉献. dedicate&#x2F;devote&#x2F;consecrate sth to doing</p>
-<p>by no means 绝不 this is by no means necessary</p>
-<p>tactic n 策略</p>
-<p>in the course of</p>
-<p>fairly adv quite, considerably 相当地</p>
-</blockquote>
-<h3 id="Automatically-cleared-references"><a href="#Automatically-cleared-references" class="headerlink" title="Automatically-cleared references"></a>Automatically-cleared references</h3><blockquote>
-<p>自动清理的引用们</p>
-</blockquote>
-<p>Soft and weak references are automatically cleared by the collector before being added to the queues with which they are registered, if any. Therefore soft and weak references need not be registered with a queue in order to be useful, while phantom references do. An object that is reachable via phantom references will remain so until all such references are cleared or themselves become unreachable.</p>
-<p>软引用和弱引用在被添加到它们注册的队列中之前，会被垃圾收集器自动清理(如果有的话)。因此为了有效，软引用和弱引用不需要被注册到一个对列中，而虚引用需要添加到队列中。一个可以通过虚引用可达的对象将保持不变，直到所有引用被清除，或者对象自身变得不可达。</p>
-<h3 id="Reachability"><a href="#Reachability" class="headerlink" title="Reachability"></a>Reachability</h3><blockquote>
-<p>可达性</p>
-</blockquote>
-<p>Going from strongest to weakest, the different levels of reachability reflect the life cycle of an object. They are operationally defined as follows:</p>
-<blockquote>
-<p>从最强到最弱，不同可达性的等级反映了一个对象的生命周期。他们操作上被定义为下列：</p>
-<p>operationally adj 操作上</p>
-</blockquote>
-<ul>
-<li>An object is <em>strongly reachable</em> if it can be reached by some thread without traversing any reference objects. A newly-created object is strongly reachable by the thread that created it.</li>
-<li>An object is <em>softly reachable</em> if it is not strongly reachable but can be reached by traversing a soft reference.</li>
-<li>An object is <em>weakly reachable</em> if it is neither strongly nor softly reachable but can be reached by traversing a weak reference. When the weak references to a weakly-reachable object are cleared, the object becomes eligible for finalization.</li>
-<li>An object is <em>phantom reachable</em> if it is neither strongly, softly, nor weakly reachable, it has been finalized, and some phantom reference refers to it.</li>
-<li>Finally, an object is <em>unreachable</em>, and therefore eligible for reclamation, when it is not reachable in any of the above ways.</li>
-</ul>
-<blockquote>
-<ul>
-<li><p>(Strong)如果对象可以被某个线程不用通过任何引用对象访问，这个对象是强可达的。一个新建的对象对于创建它的线程来讲是强可达的。</p>
+              <h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><h3 id="负载均衡的好处"><a href="#负载均衡的好处" class="headerlink" title="负载均衡的好处"></a>负载均衡的好处</h3><ul>
+<li><p>增加扩展性(increase scalability)</p>
+<p>负载均衡器可以根据服务器的流量峰值来调整（增加或减少）服务器资源</p>
 </li>
-<li><p>(Soft)如果对象不是强可达，但是可以通过软引用(SoftReference)访问到，它是软可达的。</p>
+<li><p>冗余(redudant)</p>
+<p>可以为不可避免的硬件故障和服务器宕机提供安全保障</p>
 </li>
-<li><p>(Weak)如果对象既不是强可达，也不是软可达，但可以通过弱引用(WeakReference)访问到，它是弱可达的。当指向弱引用的弱引用被清除，对象就具备了结束(finalization)的条件。</p>
-</li>
-<li><p>(phantom) 如果对象既不是强可达，软可达，也不是弱可达，对象是虚可达(PhantomReference)。它已经被结束了(finalize)，并且某个虚引用指向它。</p>
-</li>
-<li><p>最终，当对象无法通过上述任何一种方式到达时，对象是不可达状态(unreachable)，因此具备了进行回收的资格。</p>
+<li><p>可维护性和高性能(maintainability and performance)</p>
 </li>
 </ul>
-<p>reclamation n 回收</p>
-</blockquote>
-<h3 id="Interface-Summary"><a href="#Interface-Summary" class="headerlink" title="Interface Summary"></a>Interface Summary</h3><blockquote>
-<p>接口摘要</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>Interface</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Cleaner.Cleanable</td>
-<td><code>Cleanable</code> represents an object and a cleaning action registered in a <code>Cleaner</code>.</td>
-</tr>
-<tr>
-<td></td>
-<td><code>Cleanable</code> 表示在 <code>Cleaner</code>上注册的对象和清理工作。注：Cleanable接口只有一个clean()方法。</td>
-</tr>
-</tbody></table>
+<p>具有分布在多个位置和各种云环境的web服务器的业务可以随时安排维护，以提高性能，同时对应用程序正常运行时间的影响最小，因为服务器负载平衡器可以将流量重定向到未进行维护的资源。</p>
+<p>负载均衡常听到<strong>服务端负载均衡</strong>和<strong>客户端负载</strong>均衡，下面分别对比这两个概念。</p>
+<h3 id="SLB-vs-CLB"><a href="#SLB-vs-CLB" class="headerlink" title="SLB vs CLB"></a>SLB vs CLB</h3><h4 id="server-side-load-balancer-SLB"><a href="#server-side-load-balancer-SLB" class="headerlink" title="server side load balancer (SLB)"></a>server side load balancer (SLB)</h4><p>SLB是一个整体，应用于客户端和服务端之间。它接受传入的网络、应用程序流量，并使用各种方法在多个后端服务器之间分配流量。中间的组件负责分发客户端的请求到服务器上。</p>
+<p>优点：初始配置比较容易</p>
+<p>缺点：当应用整体是动态的，即便是hot reload，也很难操作</p>
+<p>例子：nginx, envoy proxy</p>
+<h4 id="client-side-load-balancer"><a href="#client-side-load-balancer" class="headerlink" title="client side load balancer"></a>client side load balancer</h4><p>客户端维护一个服务器ip列表，采取随机等方式选取ip转发请求。</p>
+<p>优点：支持应用服务器动态，当启动时应用会注册它自身</p>
+<p>缺点：初始配置比SLB困难，需要额外的注册服务，例如eureka server，eureka client，ribbon client；因为客户端侧可以知道所有应用服务器，所以也存在<strong>安全</strong>问题</p>
+<p>例子：spring cloud ribbon</p>
+<p>可以看到SLB和CLB技术主要在启动时配置和后续的动态配置上有差异。</p>
+<h3 id="负载均衡算法"><a href="#负载均衡算法" class="headerlink" title="负载均衡算法"></a>负载均衡算法</h3><p>随机，权重等</p>
+<h3 id="负载均衡相关的应用"><a href="#负载均衡相关的应用" class="headerlink" title="负载均衡相关的应用"></a>负载均衡相关的应用</h3><p>zookeeper，ribbon</p>
 
               
             </div>
@@ -401,6 +320,34 @@
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/" class="category-chain-item">系统设计</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">#系统设计</a>
+      
+    </div>
   
 </div>
 
@@ -410,8 +357,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div></div>
-      <div>http://fuheihei.github.io/java/doc-translation/java-lang-ref/</div>
+      <div>负载均衡</div>
+      <div>http://fuheihei.github.io/system_design/负载均衡/</div>
     </div>
     <div class="license-meta">
       
@@ -423,7 +370,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年8月14日</div>
+          <div>2023年4月10日</div>
         </div>
       
       
@@ -453,9 +400,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/system_design/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" title="负载均衡">
+                      <a href="/redis/data-type/" title="">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">负载均衡</span>
+                        <span class="hidden-mobile"></span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -463,8 +410,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/java-concurrency-programming/thread-executor/" title="并发编程 - 解析 ThreadPoolExecutor">
-                        <span class="hidden-mobile">并发编程 - 解析 ThreadPoolExecutor</span>
+                      <a href="/java/doc-translation/java-lang-ref/" title="">
+                        <span class="hidden-mobile"></span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -485,7 +432,7 @@
         var options = Object.assign(
           {"clientID":"184b8742c46374f5db54","clientSecret":"6595a5cdd7ed8d21409d80b9bfbf5cd2a2c494d7","repo":"fuheihei.github.io","owner":"fuheihei","admin":["fuheihei"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
           {
-            id: '9b32d54dd3336ad05e74e6ceafa74c08'
+            id: '94b5c1286b7276e44c9e45895bbc1840'
           }
         )
         var gitalk = new Gitalk(options);

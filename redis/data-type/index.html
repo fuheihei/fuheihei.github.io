@@ -1,0 +1,792 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Haha monster">
+  <meta name="keywords" content="Java,Web,Database">
+  
+    <meta name="description" content="Redis数据结构根据官方文档内容介绍 五种基本数据结构 String, List, Hash, Set, Set Stringkey和value最大都是512MB，推荐设置成“user:1000”这样有意义的key。 12345678910111213141516set &lt;key&gt; &lt;value&gt;set key value nx 如果已经存在，则设置失败，返回nilset">
+<meta property="og:type" content="article">
+<meta property="og:title" content="哈哈怪-博客">
+<meta property="og:url" content="http://fuheihei.github.io/redis/data-type/">
+<meta property="og:site_name" content="哈哈怪-博客">
+<meta property="og:description" content="Redis数据结构根据官方文档内容介绍 五种基本数据结构 String, List, Hash, Set, Set Stringkey和value最大都是512MB，推荐设置成“user:1000”这样有意义的key。 12345678910111213141516set &lt;key&gt; &lt;value&gt;set key value nx 如果已经存在，则设置失败，返回nilset">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-10T07:33:13.818Z">
+<meta property="article:modified_time" content="2023-04-10T07:35:01.365Z">
+<meta property="article:author" content="Haha monster">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="Database">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>哈哈怪-博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"fuheihei.github.io","root":"/","version":"1.9.1","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>哈哈怪</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                
+                关于
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/about/">
+                    <i class="iconfont icon-user-fill"></i>
+                    关于我
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" target="_blank" rel="noopener" href="https://github.com/fuheihei">
+                    <i class="iconfont icon-github-fill"></i>
+                    GitHub
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text=""></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-10 15:33" pubdate>
+          2023年4月10日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          41 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none"></h1>
+            
+            <div class="markdown-body">
+              
+              <h1 id="Redis数据结构"><a href="#Redis数据结构" class="headerlink" title="Redis数据结构"></a>Redis数据结构</h1><p>根据官方文档内容介绍</p>
+<p>五种基本数据结构 String, List, Hash, Set, Set</p>
+<h2 id="String"><a href="#String" class="headerlink" title="String"></a>String</h2><p>key和value最大都是512MB，推荐设置成“user:1000”这样有意义的key。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">set</span> &lt;key&gt; &lt;value&gt;<br><span class="hljs-built_in">set</span> key value nx 如果已经存在，则设置失败，返回nil<br><span class="hljs-built_in">set</span> key value xx 如果存在，才能设置成功，返回OK<br><span class="hljs-built_in">set</span> key value ex 10 过期时间<br><br>get key<br><br>expire key 5 设置key的过期时间<br><br>ttl key 查看key的time to live（默认单位：秒）<br><br>del key 删除键<br><br>pexpire<br><br>pttl<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">计数器<br>&gt; <span class="hljs-built_in">set</span> counter 100<br>OK<br>&gt; incr counter<br>(<span class="hljs-built_in">integer</span>) 101<br>&gt; incr counter<br>(<span class="hljs-built_in">integer</span>) 102<br>&gt; incrby counter 50<br>(<span class="hljs-built_in">integer</span>) 152<br><br></code></pre></td></tr></table></figure>
+
+
+
+<p><code>type key</code><br>查看key的value是什么类型，如果key不存在返回none</p>
+<p>多设置，多获取（避免多次单次设置的网络延迟）</p>
+<p>可以一次性获取多个值，一次性设置多个值</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">mset<br>mget<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="List"><a href="#List" class="headerlink" title="List"></a>List</h2><h3 id="创建List，左右添加元素"><a href="#创建List，左右添加元素" class="headerlink" title="创建List，左右添加元素"></a>创建List，左右添加元素</h3><p>lpush key &lt;元素列表&gt;<br>rpush</p>
+<h3 id="阻塞获取元素"><a href="#阻塞获取元素" class="headerlink" title="阻塞获取元素"></a>阻塞获取元素</h3><p>lpop，rpop，blpop，brpop</p>
+<p>blpop key 5<br>默认时间是秒<br>也可以阻塞获取多个key列表的元素<br>返回的是一个二元组，存在元素的key和key中的value，如果时间到了尚未获取到元素，则返回nil</p>
+<p>将source列表中的最左侧或者最右侧移动到dest的末尾，过去是lpoprpush指令<br>lmove source dest &lt;right|left&gt; &lt;right|left&gt;</p>
+<h2 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h2><p>hash的结构 key, pair&lt;field,value&gt;</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs sql">hset <span class="hljs-keyword">user</span>:<span class="hljs-number">1000</span> username antirez birthyear <span class="hljs-number">1977</span> verified <span class="hljs-number">1</span><br>(<span class="hljs-type">integer</span>) <span class="hljs-number">3</span><br><br>hget <span class="hljs-keyword">user</span>:<span class="hljs-number">1000</span> username<br>&quot;antirez&quot;<br><br>hget <span class="hljs-keyword">user</span>:<span class="hljs-number">1000</span> birthyear<br>&quot;1977&quot;<br><br>hgetall <span class="hljs-keyword">user</span>:<span class="hljs-number">1000</span><br><span class="hljs-number">1</span>) &quot;username&quot;<br><span class="hljs-number">2</span>) &quot;antirez&quot;<br><span class="hljs-number">3</span>) &quot;birthyear&quot;<br><span class="hljs-number">4</span>) &quot;1977&quot;<br><span class="hljs-number">5</span>) &quot;verified&quot;<br><span class="hljs-number">6</span>) &quot;1&quot;<br></code></pre></td></tr></table></figure>
+
+<p>可放入hash的field数量并没有做实际限制，除了物理上可用的内存。</p>
+<p><code>hset,hget,hgetall</code></p>
+<p><code>hmget</code> 可以获取多个field的值</p>
+<p>增加值类型位数值 field 的数值<br><code>hincrby</code></p>
+<h2 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h2><p>基于哈希表实现的</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 添加set元素，创建set</span><br>sadd myset 1 2 3<br>(<span class="hljs-built_in">integer</span>) 3<br><span class="hljs-comment"># 查看myset的元素</span><br>smembers myset<br>1. 3<br>2. 1<br>3. 2<br><span class="hljs-comment"># 判断3是否是myset元素</span><br>sismember myset 3<br>(<span class="hljs-built_in">integer</span>) 1<br>sismember myset 30<br>(<span class="hljs-built_in">integer</span>) 0<br><br><span class="hljs-comment">#创建集合news:1000:tags</span><br>sadd news:1000:tags 1 2 5 77<br>(<span class="hljs-built_in">integer</span>) 4<br><span class="hljs-comment"># 查看news:1000:tags的元素</span><br>smembers news:1000:tags<br><br><br>sadd tag:1:news 1000<br>(<span class="hljs-built_in">integer</span>) 1<br>sadd tag:2:news 1000<br>(<span class="hljs-built_in">integer</span>) 1<br>sadd tag:5:news 1000<br>(<span class="hljs-built_in">integer</span>) 1<br>sadd tag:77:news 1000<br>(<span class="hljs-built_in">integer</span>) 1<br><br><br><span class="hljs-comment">#新建一个52张扑克牌的集合 club, diamond, spade, heart 代表♣️，♦️，♠️，♥️</span><br>sadd deck C1 C2 C3 C4 C5 C6 C7 C8 C9 C10 CJ CQ CK<br>D1 D2 D3 D4 D5 D6 D7 D8 D9 D10 DJ DQ DK H1 H2 H3<br>H4 H5 H6 H7 H8 H9 H10 HJ HQ HK S1 S2 S3 S4 S5 S6<br>S7 S8 S9 S10 SJ SQ SK<br><br><br><span class="hljs-comment">#将deck复制给 game:1:deck</span><br>sunionstore game:1:deck deck<br><br><br><span class="hljs-comment">#获取元素个数</span><br>scard game:1:deck<br><br><span class="hljs-comment">#随机取出一个元素，并删除</span><br>spop game:1:deck<br><br><span class="hljs-comment">#随机获取一个元素，不删除，所以可能多次使用会出现重复的元素</span><br>srandmember game:1:deck<br><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="Sorted-Set"><a href="#Sorted-Set" class="headerlink" title="Sorted Set"></a>Sorted Set</h2><h3 id="ZSet数据结构"><a href="#ZSet数据结构" class="headerlink" title="ZSet数据结构"></a>ZSet数据结构</h3><p>有序集合是通过两种数据结构实现的</p>
+<h4 id="压缩列表-ziplist"><a href="#压缩列表-ziplist" class="headerlink" title="压缩列表 ziplist"></a>压缩列表 ziplist</h4><p>ziplist是为了提高存储效率而设计的一种特殊编码的双向链表。它可以存储字符串或者整数，存储整数时是采用整数的二进制而不是字符串形式存储。它能在O(1)的时间复杂度下完成list两端的push和pop操作。但是因为每次操作都需要重新分配ziplist的内存，所以实际复杂度和ziplist的内存使用量相关。</p>
+<h4 id="跳跃表-zSkiplist"><a href="#跳跃表-zSkiplist" class="headerlink" title="跳跃表 zSkiplist"></a>跳跃表 zSkiplist</h4><p>跳跃表的性能可以保证在查找，删除，添加等操作的时候在对数期望时间内完成，这个性能是可以和平衡树来相比较的，而且在实现方面比平衡树要优雅，这是采用跳跃表的主要原因。跳跃表的复杂度是O(log(n))。</p>
+<p>Set中的元素并不是有序的，但是Sorted Set中的每个元素和一个浮点数score相联系，有点像Hash和Set。</p>
+<p>排序规则：<br>（1）如果A.score is &gt; B.score，那么 A&gt;B<br>（2）如果A.score is &#x3D;&#x3D; B.score，那么字典序大的A会A&gt;B</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs bash">zadd &lt;zset_name&gt; score key<br>zadd hackers 1940 <span class="hljs-string">&quot;Alan Kay&quot;</span><br><br><span class="hljs-comment">#也能添加多个entry,形如 score-value的形式</span><br>zadd hackers 1912 <span class="hljs-string">&quot;Alan Turing&quot;</span> 1969 <span class="hljs-string">&quot;Linus Torvalds&quot;</span><br><br><br><span class="hljs-comment">#返回排序的结果，默认是score从小到大</span><br>zrange hackers 0 -1<br><span class="hljs-comment">#Alan Turing</span><br><span class="hljs-comment">#Claude Shannon</span><br><span class="hljs-comment">#Hedy Lamarr</span><br><span class="hljs-comment">#Alan Kay</span><br><span class="hljs-comment">#Sophie Wilson</span><br><span class="hljs-comment">#Linus Torvalds</span><br><br><span class="hljs-comment"># 返回排序结构，并包含数值，出身年份不一定准确，是假数据</span><br>zrange hackers 0 -1 withscores<br>Alan Turing<br>1912<br>Claude Shannon<br>1916<br>Hedy Lamarr<br>1916<br>Alan Kay<br>1940<br>Sophie Wilson<br>1957<br>Linus Torvalds<br>1969<br><br><br><span class="hljs-comment">#也可以逆序排序，实现score从大到小的排序</span><br>zrevrange hackers 0 -1<br><br>zrevrange hackers 0 -1 withscores<br>Linus Torvalds<br>1969<br>Sophie Wilson<br>1957<br>Alan Kay<br>1940<br>Hedy Lamarr<br>1916<br>Claude Shannon<br>1916<br>Alan Turing<br>1912<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h3 id="范围查询"><a href="#范围查询" class="headerlink" title="范围查询"></a>范围查询</h3><p>return all the elements with a score between negative infinity and 1950</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs gams">&gt; zrangebyscore hackers -<span class="hljs-literal">inf</span> <span class="hljs-number">1950</span><br><span class="hljs-number">1</span>) <span class="hljs-string">&quot;Alan Turing&quot;</span><br><span class="hljs-number">2</span>) <span class="hljs-string">&quot;Hedy Lamarr&quot;</span><br><span class="hljs-number">3</span>) <span class="hljs-string">&quot;Claude Shannon&quot;</span><br><span class="hljs-number">4</span>) <span class="hljs-string">&quot;Alan Kay&quot;</span><br><span class="hljs-number">5</span>) <span class="hljs-string">&quot;Anita Borg&quot;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="范围删除"><a href="#范围删除" class="headerlink" title="范围删除"></a>范围删除</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># (1940,1960) ,开区间</span><br>zremrangebyscore hackers 1940 1960<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="获得zset中的元素排序"><a href="#获得zset中的元素排序" class="headerlink" title="获得zset中的元素排序"></a>获得zset中的元素排序</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">zrank</span> hackers <span class="hljs-string">&quot;Anita Borg&quot;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="字典排序"><a href="#字典排序" class="headerlink" title="字典排序"></a>字典排序</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">zadd hackers 0 <span class="hljs-string">&quot;Alan Kay&quot;</span> 0 <span class="hljs-string">&quot;Sophie Wilson&quot;</span> 0 <span class="hljs-string">&quot;Richard Stallman&quot;</span> 0<br>  <span class="hljs-string">&quot;Anita Borg&quot;</span> 0 <span class="hljs-string">&quot;Yukihiro Matsumoto&quot;</span> 0 <span class="hljs-string">&quot;Hedy Lamarr&quot;</span> 0 <span class="hljs-string">&quot;Claude Shannon&quot;</span><br>  0 <span class="hljs-string">&quot;Linus Torvalds&quot;</span> 0 <span class="hljs-string">&quot;Alan Turing&quot;</span><br><br>zrange hackers 0 -1<br><br><span class="hljs-comment"># zrangebylex </span><br>ZRANGEBYLEX key min max [LIMIT offset count]<br></code></pre></td></tr></table></figure>
+
+
+
+<p>zrangebylex的样例</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash">redis&gt; ZADD myzset 0 a 0 b 0 c 0 d 0 e 0 f 0 g<br>(<span class="hljs-built_in">integer</span>) 7<br>redis&gt; ZRANGEBYLEX myzset - [c<br>1) <span class="hljs-string">&quot;a&quot;</span><br>2) <span class="hljs-string">&quot;b&quot;</span><br>3) <span class="hljs-string">&quot;c&quot;</span><br>redis&gt; ZRANGEBYLEX myzset - (c<br>1) <span class="hljs-string">&quot;a&quot;</span><br>2) <span class="hljs-string">&quot;b&quot;</span><br>redis&gt; ZRANGEBYLEX myzset [aaa (g<br>1) <span class="hljs-string">&quot;b&quot;</span><br>2) <span class="hljs-string">&quot;c&quot;</span><br>3) <span class="hljs-string">&quot;d&quot;</span><br>4) <span class="hljs-string">&quot;e&quot;</span><br>5) <span class="hljs-string">&quot;f&quot;</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="BITMAP"><a href="#BITMAP" class="headerlink" title="BITMAP"></a>BITMAP</h2><ul>
+<li>可以实现统计365天用户的登陆天数</li>
+</ul>
+<h1 id="缓存穿透-击穿-雪崩-污染"><a href="#缓存穿透-击穿-雪崩-污染" class="headerlink" title="缓存穿透 击穿 雪崩 污染"></a>缓存穿透 击穿 雪崩 污染</h1><h3 id="穿透"><a href="#穿透" class="headerlink" title="穿透"></a>穿透</h3><p>穿透：redis没有数据，mysql也没有数据</p>
+<ul>
+<li><strong>解决方案</strong></li>
+</ul>
+<h4 id="（1）缓存空值"><a href="#（1）缓存空值" class="headerlink" title="（1）缓存空值"></a>（1）缓存空值</h4><p>   如一个不存在的userID，这个id在缓存和数据库中都不存在，则可以缓存一个空值，下次再查缓存直接返回空值；（防击穿）</p>
+<h4 id="（2）布隆过滤器"><a href="#（2）布隆过滤器" class="headerlink" title="（2）布隆过滤器"></a>（2）布隆过滤器</h4><p>通过bloom filter算法来存储合法key，得益于算法超高的压缩效率，只需占用极小的空间就能存储大量key值。</p>
+<h3 id="击穿"><a href="#击穿" class="headerlink" title="击穿"></a>击穿</h3><p>击穿：redis没有数据，mysql有数据</p>
+<ul>
+<li><strong>现象</strong>：数据key过期，导致多个对同一个key的查询压力给到服务器侧</li>
+<li><strong>解决方案</strong></li>
+</ul>
+<h4 id="（1）接口限流与熔断，降级"><a href="#（1）接口限流与熔断，降级" class="headerlink" title="（1）接口限流与熔断，降级"></a>（1）接口限流与熔断，降级</h4><p>重要的接口一定要做好限流策略，防止用户恶意刷接口，同时要降级准备，当接口中的某些 服务 不可用时候，进行熔断，失败快速返回机制。</p>
+<h4 id="（2）加互斥锁"><a href="#（2）加互斥锁" class="headerlink" title="（2）加互斥锁"></a>（2）加互斥锁</h4><h3 id="雪崩"><a href="#雪崩" class="headerlink" title="雪崩"></a>雪崩</h3><p>很多数据过期，导致查询压力大量给到服务器侧</p>
+<ul>
+<li><strong>解决方案</strong></li>
+</ul>
+<h4 id="（1）分散缓存时间"><a href="#（1）分散缓存时间" class="headerlink" title="（1）分散缓存时间"></a>（1）分散缓存时间</h4><p>将缓存时间分散，比如在原有的实效时间上加一个随机数，例如不同key的过期时间，可以设置为10分1秒过期，10分23秒过期。</p>
+<p>过期时间分散，对于热点数据，过期时间尽量设置得长一点，冷门数据过期时间可以短一点，这样留足够的时间给redis进行数据持久化和主从同步。</p>
+<h4 id="（2）使用缓存集群"><a href="#（2）使用缓存集群" class="headerlink" title="（2）使用缓存集群"></a>（2）使用缓存集群</h4><p>使用缓存集群，避免单机宕机造成的缓存雪崩。</p>
+<h3 id="污染"><a href="#污染" class="headerlink" title="污染"></a>污染</h3><p>指数据只被访问几次，但会长时间驻留在缓存中，消耗缓存空间<br>需要设置key淘汰策略</p>
+<ul>
+<li><strong>解决方案</strong></li>
+</ul>
+<h4 id="（1）分散缓存时间-1"><a href="#（1）分散缓存时间-1" class="headerlink" title="（1）分散缓存时间"></a>（1）分散缓存时间</h4><p>将缓存时间分散，比如在原有的实效时间上加一个随机数，例如不同key的过期时间，可以设置为10分1秒过期，10分23秒过期。</p>
+<p>过期时间分散，对于热点数据，过期时间尽量设置得长一点，冷门数据过期时间可以短一点，这样留足够的时间给redis进行数据持久化和主从同步。</p>
+<h4 id="（2）设置过期策略"><a href="#（2）设置过期策略" class="headerlink" title="（2）设置过期策略"></a>（2）设置过期策略</h4><h2 id="缓存和数据库数据不一致"><a href="#缓存和数据库数据不一致" class="headerlink" title="缓存和数据库数据不一致"></a>缓存和数据库数据不一致</h2><p>4种解决方案<a target="_blank" rel="noopener" href="https://coolshell.cn/articles/17416.html">https://coolshell.cn/articles/17416.html</a></p>
+<p>常用的是 <strong>Cache Aside Pattern</strong></p>
+<p>即先修改数据库，再删除缓存；在查询时，将对应的数据设置回redis。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://redis.io/docs/data-types/tutorial/">https://redis.io/docs/data-types/tutorial/</a></p>
+
+              
+            </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div></div>
+      <div>http://fuheihei.github.io/redis/data-type/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Haha monster</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月10日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/system_design/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" title="负载均衡">
+                        <span class="hidden-mobile">负载均衡</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  <article id="comments" lazyload>
+    
+  <div id="gitalk-container"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#gitalk-container', function() {
+      Fluid.utils.createCssLink('/css/gitalk.css')
+      Fluid.utils.createScript('https://lib.baomitu.com/gitalk/1.7.2/gitalk.min.js', function() {
+        var options = Object.assign(
+          {"clientID":"184b8742c46374f5db54","clientSecret":"6595a5cdd7ed8d21409d80b9bfbf5cd2a2c494d7","repo":"fuheihei.github.io","owner":"fuheihei","admin":["fuheihei"],"language":"zh-CN","labels":["Gitalk"],"perPage":10,"pagerDirection":"last","distractionFreeMode":false,"createIssueManually":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token"},
+          {
+            id: '53b0fe64a699dc4bc6747b5a885e7161'
+          }
+        )
+        var gitalk = new Gitalk(options);
+        gitalk.render('gitalk-container');
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+  </article>
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
+
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
